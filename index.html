@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A professional financial planning website with articles and calculators for smart money management.">
-    <title>Smart Finance Planner</title>
+    <title>News Hub</title>
 
     <!-- Canonical link tag to prevent duplicate content issues.
     Be sure to update the href with your actual website URL. -->
@@ -127,8 +127,11 @@
             <p id="notificationMessage" class="text-gray-600">You have a new update.</p>
             <p id="userIdDisplay" class="text-xs text-gray-400 mt-4 break-all"></p>
             <div class="mt-6 flex justify-center space-x-4">
-                <button id="closeNotificationBtn" class="bg-blue-600 text-white py-2 px-6 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">
-                    Got it!
+                <a id="readNowBtn" href="#" class="bg-blue-600 text-white py-2 px-6 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">
+                    Read Now
+                </a>
+                <button id="closeNotificationBtn" class="bg-gray-200 text-gray-700 py-2 px-6 rounded-full font-semibold hover:bg-gray-300 transition-colors duration-200">
+                    Close
                 </button>
             </div>
         </div>
@@ -144,17 +147,6 @@
     </script>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-        <!-- Admin Panel for simulating updates (Hidden by default) -->
-        <section class="admin-panel mt-8 mb-12 hidden">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">Admin Panel</h2>
-            <p class="text-gray-600 mb-4">Use these buttons to simulate article updates and test the notification system.</p>
-            <div class="flex flex-wrap gap-4">
-                <button id="update-finance" class="bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors">Update Finance</button>
-                <button id="update-technology" class="bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors">Update Technology</button>
-                <button id="update-entertainment" class="bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors">Update Entertainment</button>
-            </div>
-        </section>
 
         <!-- Articles Section -->
         <section>
@@ -246,7 +238,11 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, getDocs, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Enable Firestore debug logging
+        setLogLevel('debug');
 
         // Global variables provided by the environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -258,6 +254,27 @@
         let db;
         let auth;
         let userId = '';
+        let userHasSubscribed = false;
+        
+        try {
+            if (Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            } else {
+                console.warn("Firebase config is missing. Services will not be available.");
+            }
+        } catch (e) {
+            console.error("Failed to initialize Firebase:", e);
+        }
+
+        const notificationBadge = document.getElementById('notificationBadge');
+        const notificationModal = document.getElementById('notificationModal');
+        const notificationMessage = document.getElementById('notificationMessage');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        const readNowBtn = document.getElementById('readNowBtn');
+        const closeNotificationBtn = document.getElementById('closeNotificationBtn');
+        const subscribeBtn = document.getElementById('subscribeBtn');
 
         // All articles with their full content, now including Technology and Entertainment
         const articles = [
@@ -276,329 +293,322 @@
             // Technology Articles (New)
             { id: 11, category: "technology", title: "The Future of AI in Everyday Life", content: "<p>Artificial Intelligence is no longer a futuristic concept; it's being integrated into our daily lives. From smart home devices to personalized recommendations on streaming platforms, AI is everywhere. The next decade will see AI become even more seamless, anticipating our needs and automating complex tasks, transforming everything from healthcare to transportation.</p><h3>AI in Healthcare</h3><p>AI is being used to analyze medical images, predict disease outbreaks, and even assist in surgery. This is leading to faster diagnoses and more personalized treatment plans for patients.</p><h3>AI in Transportation</h3><p>Self-driving cars are just the beginning. AI is set to revolutionize logistics, public transit, and even air travel, making it safer and more efficient.</p><h3>AI and Personalization</h3><p>Imagine a smart assistant that not only organizes your calendar but also suggests the most efficient way to achieve your goals based on your habits. AI will take personalization to a new level, making our lives more convenient.</p>", image: "https://img.freepik.com/free-photo/ai-human-hand-touching-cyborg-s-hand-glowing-blue-light_23-2149479344.jpg" },
             { id: 12, category: "technology", title: "The Rise of Quantum Computing", content: "<p>Quantum computing uses the principles of quantum mechanics to process information, allowing it to solve problems that are currently impossible for even the most powerful supercomputers. While still in its infancy, it holds the potential to revolutionize fields like cryptography, drug discovery, and material science.</p><h3>How is it Different?</h3><p>Classical computers use bits (0s and 1s) to store data. Quantum computers use qubits, which can represent 0, 1, or both at the same time, thanks to a property called superposition. This allows them to perform complex calculations at an exponential speed.</p><h3>Challenges Ahead</h3><p>Despite its promise, quantum computing faces significant challenges, including the need for extremely low temperatures and the fragility of qubits. However, ongoing research is making rapid progress, bringing a quantum future closer to reality.</p>", image: "https://img.freepik.com/free-photo/quantum-computer-processor_23-2149187654.jpg" },
-            { id: 13, category: "technology", title: "Cybersecurity Best Practices for 2025", content: "<p>As our digital world expands, so do cybersecurity threats. Protecting your personal and financial data is more critical than ever. Here are some key best practices to follow in 2025.</p><h3>1. Use Strong, Unique Passwords</h3><p>Avoid using simple passwords or reusing the same password across multiple sites. Use a password manager to securely store complex, unique passwords for all your accounts.</p><h3>2. Enable Multi-Factor Authentication (MFA)</h3><p>MFA adds an extra layer of security, requiring a second form of verification (like a code from your phone) in addition to your password. This is one of the most effective ways to protect your accounts from unauthorized access.</p><h3>3. Be Cautious of Phishing Scams</h3><p>Phishing attacks are becoming increasingly sophisticated. Be wary of suspicious emails or messages asking for personal information. Always verify the sender's identity and never click on unverified links.</p><h3>4. Keep Your Software Updated</h3><p>Software updates often include critical security patches. Make sure to regularly update your operating system, web browser, and other applications to protect against known vulnerabilities.</p><h3>5. Back Up Your Data</p><p>Regularly back up your important files to an external hard drive or a cloud service. This ensures that you won't lose your data in the event of a ransomware attack or hardware failure.</p>", image: "https://img.freepik.com/free-photo/cyber-security-background_23-2148165780.jpg" },
+            { id: 13, category: "technology", title: "Cybersecurity Best Practices for 2025", content: "<p>As our digital world expands, so do cybersecurity threats. Protecting your personal and financial data is more critical than ever. Here are some key best practices to follow in 2025.</p><h3>1. Use Strong, Unique Passwords</h3><p>Avoid using simple passwords or reusing the same password across multiple sites. Use a password manager to securely store complex, unique passwords for all your accounts.</p><h3>2. Enable Multi-Factor Authentication (MFA)</h3><p>MFA adds an extra layer of security, requiring a second form of verification (like a code from your phone) in addition to your password. This is one of the most effective ways to protect your accounts from unauthorized access.</p><h3>3. Be Cautious of Phishing Scams</h3><p>Phishing attacks are becoming increasingly sophisticated. Be wary of suspicious emails or messages asking for personal information. Always verify the sender's identity and never click on unverified links.</p><h3>4. Keep Your Software Updated</h3><p>Software updates often include critical security patches. Make sure to regularly update your operating system, web browser, and other applications to protect against known vulnerabilities.</p><h3>5. Back Up Your Data</p><p>Regularly back up your important data to a secure cloud service or external drive. This protects you in case of a ransomware attack or a device failure.</p>", image: "https://img.freepik.com/free-photo/cybersecurity-concept_23-2149176374.jpg" },
+            { id: 14, category: "technology", title: "The Latest in Renewable Energy Tech", content: "<p>The shift to renewable energy sources is accelerating, driven by innovation in solar, wind, and geothermal technologies. Here's a look at the latest advancements.</p><h3>1. Perovskite Solar Cells</h3><p>These new solar cells are cheaper to produce and more efficient at converting sunlight into electricity, making solar energy more accessible to the masses.</p><h3>2. Floating Wind Farms</h3><p>Floating offshore wind turbines can be deployed in deep waters where traditional wind farms are not feasible, unlocking a massive potential for clean energy generation.</p><h3>3. Geothermal Power Advances</h3><p>New drilling techniques are making geothermal energy more viable by allowing access to high-temperature rock formations deeper underground, providing a constant source of power.</p>", image: "https://img.freepik.com/free-photo/renewable-energy-concept_23-2149169420.jpg" },
+            { id: 15, category: "technology", title: "5G vs. 6G: What's the Next Frontier?", content: "<p>5G is rolling out globally, but the research community is already looking ahead to 6G. While 5G promises faster speeds and lower latency, 6G aims to create an even more connected world.</p><h3>What to Expect from 6G</h3><p>6G is envisioned to support speeds of up to 1 Tbps, enabling instant, real-time communication for holographic calls and immersive virtual reality experiences. It will also be designed to be more energy-efficient and to connect billions of devices simultaneously.</p><h3>The Role of AI</h3><p>AI will be a fundamental part of the 6G network, helping to manage traffic, optimize performance, and ensure a seamless connection for all devices, from smartphones to smart cities.</p>", image: "https://img.freepik.com/free-photo/6g-network-concept_23-2149216752.jpg" },
 
             // Entertainment Articles (New)
-            { id: 14, category: "entertainment", title: "The Next Big Thing in Streaming: Interactive Content", content: "<p>Interactive entertainment, where the viewer's choices shape the narrative, is poised to become the next major trend in streaming. Following the success of titles like 'Bandersnatch,' platforms are investing heavily in a new wave of interactive series and films.</p><h3>A New Era of Storytelling</h3><p>This format allows for a more immersive and engaging experience, blurring the line between viewer and participant. It gives creators a new medium to explore complex storylines and multiple endings, offering a unique replay value.</p><h3>Behind the Scenes</h3><p>Creating interactive content is a technical challenge. It requires a new approach to scriptwriting, filming, and post-production, but the payoff is a deeper connection with the audience and a more memorable experience.</p>", image: "https://img.freepik.com/free-photo/film-reel-popcorn-3d-illustration_23-2148924193.jpg" },
-            { id: 15, category: "entertainment", title: "Virtual Concerts: The Future of Live Music?", content: "<p>With advancements in virtual reality (VR) and augmented reality (AR), live music is taking on a new dimension. Virtual concerts are becoming more common, offering a unique and accessible way to experience your favorite artists from anywhere in the world.</p><h3>More Than Just a Live Stream</h3><p>Unlike a simple live stream, a virtual concert in a metaverse platform can offer a full 3D, interactive experience. Attendees can customize their avatars, interact with other fans, and even get a virtual front-row seat. This opens up new possibilities for both artists and fans, breaking down geographical barriers.</p><h3>Accessibility and Innovation</h3><p>Virtual concerts provide accessibility to fans who might not be able to attend a physical concert due to cost or location. It also allows artists to innovate and create stunning visual spectacles that would be impossible in a physical venue.</p>", image: "https://img.freepik.com/free-photo/vr-concert-experience_23-2149591244.jpg" },
-            { id: 16, category: "entertainment", title: "Hollywood's New Frontier: The Use of AI in Filmmaking", content: "<p>Artificial intelligence is slowly but surely making its way into the filmmaking industry. From scriptwriting to post-production, AI tools are helping filmmakers streamline their work and push creative boundaries.</p><h3>AI in Pre-Production</h3><p>AI can analyze scripts to predict a film's potential box office success or even generate new dialogue. Some studios are using AI to create storyboards and scout locations, making the pre-production process more efficient.</p><h3>AI in Post-Production</h3><p>AI is also being used to create realistic visual effects, enhance audio quality, and automate color grading. This saves a lot of time and resources, allowing filmmakers to focus on the creative aspects of their work.</p><h3>Ethical Considerations</h3><p>While AI offers many benefits, its use in filmmaking also raises ethical questions, particularly concerning the role of human artists. It's a debate that will shape the future of Hollywood.</p>", image: "https://img.freepik.com/free-photo/movie-clapperboard-ai_23-2149258284.jpg" }
+            { id: 16, category: "entertainment", title: "The Best Movies of 2025 (So Far)", content: "<p>2025 has been a fantastic year for cinema. From mind-bending sci-fi to heartwarming dramas, here are some of the standout films that have critics and audiences buzzing.</p><h3>1. 'Cosmic Whispers'</h3><p>A stunning visual spectacle, this sci-fi epic follows a lone astronaut's journey to a distant galaxy. The film's use of practical effects and a haunting score make it a must-see for all fans of the genre.</p><h3>2. 'Echoes of a Dream'</h3><p>A powerful drama that explores themes of loss and reconciliation. The lead performance is a career-best, delivering a performance that is both subtle and emotionally devastating.</p><h3>3. 'The Laugh Factory'</h3><p>The year's funniest comedy, 'The Laugh Factory' is a non-stop riot that pokes fun at the absurdities of modern life. It's a hilarious and surprisingly poignant film that will leave you wanting more.</p>", image: "https://img.freepik.com/free-photo/movie-clapperboard_23-2147774218.jpg" },
+            { id: 17, category: "entertainment", title: "Top 10 Must-Watch TV Shows This Season", content: "<p>The golden age of television is alive and well, with a flood of new shows and returning favorites. Here are the top 10 shows you should be binge-watching right now.</p><h3>1. 'The Chronos Directive'</h3><p>A gripping time-travel thriller that keeps you on the edge of your seat. The complex plot and unexpected twists make it a show you'll be thinking about long after the credits roll.</p><h3>2. 'Royal Rumble'</h3><p>A period drama that offers a fresh take on historical events, 'Royal Rumble' is a beautifully shot and acted series that will transport you to a different era.</p><h3>3. 'Street Beats'</h3><p>A documentary series that explores the history of hip-hop music. 'Street Beats' features exclusive interviews and archival footage that give you a deep look into the evolution of the genre.</p>", image: "https://img.freepik.com/free-photo/television-set_23-2147773297.jpg" },
+            { id: 18, category: "entertainment", title: "Music Trends of 2025: What's Hot and What's Not", content: "<p>The music landscape is constantly changing, and 2025 has seen some exciting new trends emerge. From the revival of classic genres to the rise of new artists, here's what's making waves.</p><h3>1. The Return of Funk</h3><p>Funk music is back in a big way, with new artists blending classic grooves with modern production. The result is a sound that's both nostalgic and fresh.</p><h3>2. DIY Music Production</h3><p>Thanks to accessible technology, more artists are producing their own music from home. This has led to a boom in independent artists who are creating unique and experimental sounds.</p><h3>3. The Rise of 'S-pop'</h3><p>Following the global success of K-pop, 'S-pop' (Spanish-language pop) is gaining a huge following. Artists from Latin America and Spain are dominating the charts with catchy beats and powerful vocals.</p>", image: "https://img.freepik.com/free-photo/music-trends_23-2148169421.jpg" },
+            { id: 19, category: "entertainment", title: "Gaming Spotlight: The Most Anticipated Games of the Year", content: "<p>Gaming is bigger than ever, and 2025 is set to be a landmark year with a lineup of highly anticipated games that promise to push the boundaries of technology and storytelling.</p><h3>1. 'Galactic Frontier'</h3><p>This space-faring RPG gives players an entire galaxy to explore. The game's intricate lore, deep customization options, and dynamic combat system make it a contender for Game of the Year.</p><h3>2. 'The Last Kingdom'</h3><p>A brutal and beautiful open-world survival game set in a post-apocalyptic world. Players must scavenge for resources, craft weapons, and build a settlement to survive against all odds.</p><h3>3. 'Pixel Party'</h3><p>A charming and colorful multiplayer game that's perfect for a night in with friends. The game's simple-to-learn mechanics and competitive mini-games make it a blast to play.</p>", image: "https://img.freepik.com/free-photo/gaming-controller_23-2148165768.jpg" },
+            { id: 20, category: "entertainment", title: "The Evolution of Streaming Services", content: "<p>Streaming services have completely changed how we watch movies and TV. As the market becomes more crowded, these services are evolving to stay ahead of the competition.</p><h3>1. The Rise of 'Hybrid' Services</h3><p>Many services are now offering a mix of ad-supported and ad-free tiers, giving consumers more choice. This has also led to a return to live sports and news on streaming platforms.</p><h3>2. Focus on Original Content</h3><p>To attract and retain subscribers, services are investing heavily in original content. This has led to a creative boom, with more high-quality and unique shows and movies being produced than ever before.</p><h3>3. A Push for Personalization</h3><p>Streaming platforms are using AI to offer hyper-personalized recommendations. They are also creating new features, like interactive shows and personalized homepages, to enhance the viewing experience.</p>", image: "https://img.freepik.com/free-photo/streaming-service-concept_23-2148169422.jpg" }
         ];
 
-        let currentArticles = articles;
-        let currentIndex = 0;
+        let currentCategory = 'all';
 
-        // Get DOM elements
-        const sectionTitleEl = document.getElementById('sectionTitle');
-        const blogCardsContainer = document.getElementById('blogCards');
-        const articleContainer = document.getElementById('articleContainer');
-        const navLinks = document.querySelectorAll('nav a');
-        const titleEl = document.getElementById('articleTitle');
-        const textEl = document.getElementById('articleText');
-        const imageEl = document.getElementById('articleImage');
-        const calculatorContainer = document.querySelector('.calculator-container');
-        const subscribeBtn = document.getElementById('subscribeBtn');
-        const notificationBtn = document.getElementById('notificationBtn');
-        const notificationBadge = document.getElementById('notificationBadge');
-        const notificationModal = document.getElementById('notificationModal');
-        const notificationMessage = document.getElementById('notificationMessage');
-        const closeNotificationBtn = document.getElementById('closeNotificationBtn');
-        const userIdDisplay = document.getElementById('userIdDisplay');
-        const adminPanel = document.querySelector('.admin-panel');
-
-        // Functions to render article previews
-        function renderArticlePreviews(articlesToRender, title) {
-            blogCardsContainer.innerHTML = ''; // Clear previous content
-            sectionTitleEl.textContent = title;
-            currentArticles = articlesToRender;
-
-            articlesToRender.forEach((article, index) => {
+        // Check for subscription status on page load
+        if (typeof localStorage !== 'undefined') {
+            userHasSubscribed = localStorage.getItem('userSubscribed') === 'true';
+            if (userHasSubscribed) {
+                subscribeBtn.textContent = 'Subscribed!';
+                subscribeBtn.disabled = true;
+                subscribeBtn.classList.remove('bg-white', 'text-blue-600');
+                subscribeBtn.classList.add('bg-green-500', 'text-white');
+            }
+        }
+        
+        // --- Core UI & Navigation Functions ---
+        const renderCards = (category) => {
+            const container = document.getElementById('blogCards');
+            container.innerHTML = '';
+            
+            let filteredArticles = articles;
+            if (category !== 'all') {
+                filteredArticles = articles.filter(article => article.category === category);
+            }
+            
+            filteredArticles.forEach(article => {
                 const card = document.createElement('div');
-                card.className = 'card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden';
+                card.id = `article-${article.id}`;
+                card.className = 'bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-2';
                 card.innerHTML = `
-                    <img src="${article.image}" alt="${article.title}" class="w-full h-40 object-cover">
+                    <img src="${article.image}" alt="${article.title}" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-blue-600">${article.title}</h3>
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full mb-2">${article.category.charAt(0).toUpperCase() + article.category.slice(1)}</span>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${article.title}</h3>
+                        <p class="text-gray-600">${article.content.substring(0, 100).replace(/<[^>]*>/g, '')}... <span class="text-blue-600 font-semibold">Read More</span></p>
                     </div>
                 `;
-                card.addEventListener('click', () => showArticle(index));
-                blogCardsContainer.appendChild(card);
+                card.onclick = () => showArticle(article.id);
+                container.appendChild(card);
             });
+        };
 
-            articleContainer.style.display = 'none';
-            blogCardsContainer.style.display = 'grid';
-        }
+        const showArticle = (articleId) => {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+            
+            document.getElementById('sectionTitle').style.display = 'none';
+            document.getElementById('blogCards').style.display = 'none';
+            document.getElementById('articleContainer').style.display = 'block';
 
-        // Show a specific article
-        function showArticle(index) {
-            currentIndex = index;
-            const article = currentArticles[currentIndex];
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleImage').src = article.image;
+            document.getElementById('articleText').innerHTML = article.content;
 
-            titleEl.innerText = article.title;
-            textEl.innerHTML = article.content;
-            imageEl.src = article.image;
+            // Set up next/back buttons
+            const filteredArticles = articles.filter(a => a.category === currentCategory);
+            const currentIndex = filteredArticles.findIndex(a => a.id === articleId);
+            
+            const nextBtn = document.getElementById('nextBtn');
+            const backBtn = document.getElementById('backBtn');
+            
+            nextBtn.onclick = () => {
+                const nextIndex = (currentIndex + 1) % filteredArticles.length;
+                showArticle(filteredArticles[nextIndex].id);
+            };
+            
+            backBtn.onclick = () => {
+                showMainPage();
+            };
+        };
+        
+        const showMainPage = () => {
+            document.getElementById('sectionTitle').style.display = 'block';
+            document.getElementById('blogCards').style.display = 'grid';
+            document.getElementById('articleContainer').style.display = 'none';
+        };
 
-            blogCardsContainer.style.display = 'none';
-            articleContainer.style.display = 'block';
-            articleContainer.scrollIntoView({ behavior: "smooth" });
-        }
-
-        // Back to articles button
-        document.getElementById('backBtn').addEventListener('click', () => {
-            articleContainer.style.display = 'none';
-            blogCardsContainer.style.display = 'grid';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Event listeners for navigation
+        document.getElementById('nav-finance').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCategory = 'finance';
+            renderCards('finance');
+            showMainPage();
+            document.getElementById('sectionTitle').textContent = 'Finance Articles';
         });
 
-        // Next Article button
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            const nextIndex = (currentIndex + 1) % currentArticles.length;
-            showArticle(nextIndex);
+        document.getElementById('nav-technology').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCategory = 'technology';
+            renderCards('technology');
+            showMainPage();
+            document.getElementById('sectionTitle').textContent = 'Technology Articles';
+        });
+
+        document.getElementById('nav-entertainment').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCategory = 'entertainment';
+            renderCards('entertainment');
+            showMainPage();
+            document.getElementById('sectionTitle').textContent = 'Entertainment Articles';
+        });
+
+        // Event listener for the main back button on the article view
+        document.getElementById('backBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            renderCards(currentCategory);
+            showMainPage();
         });
         
-        // Navigation links
-        navLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                const category = event.target.id.replace('nav-', '');
-                const filteredArticles = articles.filter(a => a.category === category);
-                const titleText = category.charAt(0).toUpperCase() + category.slice(1) + " Articles";
-                renderArticlePreviews(filteredArticles, titleText);
+        // Initial render
+        renderCards('all');
 
-                // Show or hide the calculator section based on the category
-                if (category === 'finance') {
-                    calculatorContainer.classList.remove('hidden');
-                } else {
-                    calculatorContainer.classList.add('hidden');
+        // --- Firebase Functions ---
+        const updateSubscriptions = async (uid) => {
+            if (!db || !uid) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'subscription');
+            const userSubscribed = userHasSubscribed;
+            try {
+                await setDoc(docRef, { uid, subscribed: userSubscribed }, { merge: true });
+                console.log("User subscription status updated in Firestore.");
+            } catch (e) {
+                console.error("Error updating subscription status:", e);
+            }
+        };
+
+        const updateLastSeenArticle = async (uid, articleId) => {
+            if (!db || !uid) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'lastSeen');
+            try {
+                await setDoc(docRef, { lastSeenArticleId: articleId }, { merge: true });
+                console.log("User last seen article updated:", articleId);
+            } catch (e) {
+                console.error("Error updating last seen article:", e);
+            }
+        };
+
+        const checkForUpdates = async (uid) => {
+            if (!db || !uid) return;
+            try {
+                // Get the user's last seen article ID
+                const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'lastSeen');
+                const userDocSnap = await getDoc(userDocRef);
+                const lastSeenId = userDocSnap.exists() ? userDocSnap.data().lastSeenArticleId : 0;
+                
+                // Get the latest published article ID from the public updates collection
+                const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', 'latest_update');
+                const updatesDocSnap = await getDoc(updatesDocRef);
+
+                if (updatesDocSnap.exists()) {
+                    const latestArticleId = updatesDocSnap.data().articleId;
+                    
+                    if (userHasSubscribed && latestArticleId > lastSeenId) {
+                        const article = articles.find(a => a.id === latestArticleId);
+                        if (article) {
+                            notificationBadge.classList.remove('hidden');
+                            notificationMessage.textContent = `New article published: "${article.title}"!`;
+                            readNowBtn.href = `#article-${article.id}`;
+                            notificationModal.style.display = 'flex';
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Error checking for updates:", e);
+            }
+        };
+
+        // --- Event Listeners for Firebase & UI ---
+        
+        // Subscription button logic
+        if (subscribeBtn) {
+            subscribeBtn.addEventListener('click', () => {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem('userSubscribed', 'true');
+                    userHasSubscribed = true;
+                    subscribeBtn.textContent = 'Subscribed!';
+                    subscribeBtn.disabled = true;
+                    subscribeBtn.classList.remove('bg-white', 'text-blue-600');
+                    subscribeBtn.classList.add('bg-green-500', 'text-white');
+                    if (userId) {
+                        updateSubscriptions(userId);
+                    }
                 }
             });
-        });
+        }
+        
+        // Read Now button logic to close modal and mark notification as seen
+        if (readNowBtn) {
+            readNowBtn.addEventListener('click', async (e) => {
+                e.preventDefault(); // Prevent default link behavior
+                notificationModal.style.display = 'none';
+                notificationBadge.classList.add('hidden');
+                
+                // Get the article ID and category from the link href
+                const link = e.target.href;
+                const articleId = parseInt(link.split('-').pop());
+                const article = articles.find(a => a.id === articleId);
 
-        // SIP Calculator Function
+                if (article) {
+                    currentCategory = article.category;
+                    showArticle(articleId);
+                    if (userId) {
+                        await updateLastSeenArticle(userId, articleId);
+                    }
+                }
+            });
+        }
+
+        if (closeNotificationBtn) {
+            closeNotificationBtn.addEventListener('click', async () => {
+                notificationModal.style.display = 'none';
+                notificationBadge.classList.add('hidden');
+                
+                // Mark the notification as seen by updating the user's last seen article ID
+                const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', 'latest_update');
+                const updatesDocSnap = await getDoc(updatesDocRef);
+                if (updatesDocSnap.exists()) {
+                    const latestArticleId = updatesDocSnap.data().articleId;
+                    if (userId) {
+                        await updateLastSeenArticle(userId, latestArticleId);
+                    }
+                }
+            });
+        }
+
+        // --- Firebase Authentication State Listener ---
+        if (auth) {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("User is authenticated with ID:", userId);
+                    userIdDisplay.textContent = 'Your User ID: ' + userId;
+                    updateSubscriptions(userId);
+                    checkForUpdates(userId);
+                } else {
+                    console.log("No user is signed in. Signing in anonymously...");
+                    userIdDisplay.textContent = 'No user signed in.';
+                    // Use signInWithCustomToken if available, otherwise fall back to anonymous
+                    if (initialAuthToken) {
+                        try {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } catch (error) {
+                            console.error("Custom token sign-in failed:", error);
+                            signInAnonymously(auth); // Fallback to anonymous
+                        }
+                    } else {
+                        signInAnonymously(auth);
+                    }
+                }
+            });
+        }
+
+        // --- Calculator Functions ---
         function calculateSIP() {
             const amount = parseFloat(document.getElementById('sipAmount').value);
-            const rate = parseFloat(document.getElementById('sipReturn').value);
+            const rate = parseFloat(document.getElementById('sipReturn').value) / 100 / 12;
             const years = parseFloat(document.getElementById('sipYears').value);
-
-            if (isNaN(amount) || isNaN(rate) || isNaN(years) || amount <= 0 || rate <= 0 || years <= 0) {
-                document.getElementById('sipResult').innerText = "Please enter valid positive numbers.";
-                return;
-            }
-
-            const monthlyRate = rate / 100 / 12;
             const months = years * 12;
 
-            const futureValue = amount * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-            const investedAmount = amount * months;
-            const totalEarnings = futureValue - investedAmount;
+            if (isNaN(amount) || isNaN(rate) || isNaN(years)) {
+                document.getElementById('sipResult').textContent = "Please enter valid numbers.";
+                return;
+            }
+
+            const futureValue = amount * ((Math.pow(1 + rate, months) - 1) / rate) * (1 + rate);
+            const totalInvestment = amount * months;
+            const totalReturns = futureValue - totalInvestment;
 
             document.getElementById('sipResult').innerHTML = `
-                <p><strong>Invested Amount:</strong> ₹${investedAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
-                <p><strong>Total Earnings:</strong> ₹${totalEarnings.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
-                <p class="text-blue-600"><strong>Future Value:</strong> ₹${futureValue.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+                <p>Investment: ₹${totalInvestment.toFixed(0)}</p>
+                <p>Returns: ₹${totalReturns.toFixed(0)}</p>
+                <p>Total Value: ₹${futureValue.toFixed(0)}</p>
             `;
         }
-        window.calculateSIP = calculateSIP;
 
-        // Lumpsum Calculator Function
         function calculateLumpsum() {
             const amount = parseFloat(document.getElementById('lumpsumAmount').value);
-            const rate = parseFloat(document.getElementById('lumpsumReturn').value);
+            const rate = parseFloat(document.getElementById('lumpsumReturn').value) / 100;
             const years = parseFloat(document.getElementById('lumpsumYears').value);
 
-            if (isNaN(amount) || isNaN(rate) || isNaN(years) || amount <= 0 || rate <= 0 || years <= 0) {
-                document.getElementById('lumpsumResult').innerText = "Please enter valid positive numbers.";
+            if (isNaN(amount) || isNaN(rate) || isNaN(years)) {
+                document.getElementById('lumpsumResult').textContent = "Please enter valid numbers.";
                 return;
             }
 
-            const annualRate = rate / 100;
-
-            const futureValue = amount * Math.pow(1 + annualRate, years);
-            const totalEarnings = futureValue - amount;
+            const futureValue = amount * Math.pow((1 + rate), years);
+            const totalReturns = futureValue - amount;
 
             document.getElementById('lumpsumResult').innerHTML = `
-                <p><strong>Invested Amount:</strong> ₹${amount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
-                <p><strong>Total Earnings:</strong> ₹${totalEarnings.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
-                <p class="text-blue-600"><strong>Future Value:</strong> ₹${futureValue.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+                <p>Investment: ₹${amount.toFixed(0)}</p>
+                <p>Returns: ₹${totalReturns.toFixed(0)}</p>
+                <p>Total Value: ₹${futureValue.toFixed(0)}</p>
             `;
         }
+        
+        // Expose calculator functions to the global scope for onclick attributes
+        window.calculateSIP = calculateSIP;
         window.calculateLumpsum = calculateLumpsum;
+    </script>
 
-        // Message box instead of alert()
-        function showMessageBox(message) {
-            notificationMessage.textContent = message;
-            notificationModal.style.display = 'flex';
-        }
-
-        async function initializeFirebase() {
-            try {
-                if (firebaseConfig && Object.keys(firebaseConfig).length > 0) {
-                    app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-                    setLogLevel('debug');
-                } else {
-                    console.error("Firebase config is missing.");
-                    return;
-                }
-
-                await new Promise((resolve, reject) => {
-                    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                        unsubscribe();
-                        if (user) {
-                            userId = user.uid;
-                        } else {
-                            try {
-                                if (initialAuthToken) {
-                                    const userCredential = await signInWithCustomToken(auth, initialAuthToken);
-                                    userId = userCredential.user.uid;
-                                } else {
-                                    const userCredential = await signInAnonymously(auth);
-                                    userId = userCredential.user.uid;
-                                }
-                            } catch (error) {
-                                console.error("Firebase Auth error:", error);
-                            }
-                        }
-                        console.log("Firebase initialized. User ID:", userId);
-                        userIdDisplay.textContent = `User ID: ${userId}`;
-                        resolve();
-                    }, reject);
-                });
-            } catch (error) {
-                console.error("Firebase initialization failed:", error);
-            }
-        }
-
-        async function subscribeUser() {
-            if (!userId) {
-                console.error("User not authenticated. Cannot subscribe.");
-                return;
-            }
-
-            const subscribersRef = doc(db, `/artifacts/${appId}/public/data/subscribers/${userId}`);
-            const data = {
-                subscribedAt: new Date().toISOString(),
-                // Initialize lastNotified for all categories
-                lastNotified: {
-                    finance: '1970-01-01T00:00:00Z',
-                    technology: '1970-01-01T00:00:00Z',
-                    entertainment: '1970-01-01T00:00:00Z'
-                }
-            };
-            try {
-                await setDoc(subscribersRef, data, { merge: true });
-                showMessageBox("You have successfully subscribed to website updates!");
-                console.log("User subscribed:", userId);
-            } catch (error) {
-                console.error("Error subscribing user:", error);
-            }
-        }
-
-        function checkWebsiteUpdates() {
-            if (!userId) {
-                console.warn("User ID not available yet. Skipping update check.");
-                return;
-            }
-
-            const userDocRef = doc(db, `/artifacts/${appId}/public/data/subscribers/${userId}`);
-            const categoryUpdatesCol = collection(db, `/artifacts/${appId}/public/data/category-updates`);
-
-            const notificationMessages = {
-                finance: "Here is the latest news on finance.",
-                technology: "New technology updates are here.",
-                entertainment: "Click to read the latest entertainment articles."
-            };
-
-            // Listen to the user's document for a change in lastNotified
-            onSnapshot(userDocRef, (userSnap) => {
-                if (!userSnap.exists()) {
-                    console.log("User document does not exist, cannot check for updates.");
-                    return;
-                }
-                const userData = userSnap.data();
-                const lastNotified = userData.lastNotified || {};
-
-                // Now listen to the category updates
-                onSnapshot(categoryUpdatesCol, (snapshot) => {
-                    let newUpdates = false;
-                    let updatedCategories = [];
-
-                    snapshot.forEach((doc) => {
-                        const categoryId = doc.id;
-                        const updateData = doc.data();
-                        const latestUpdateTimestamp = updateData.lastUpdateTimestamp;
-
-                        if (latestUpdateTimestamp && new Date(latestUpdateTimestamp) > new Date(lastNotified[categoryId] || '1970-01-01T00:00:00Z')) {
-                            newUpdates = true;
-                            updatedCategories.push(categoryId);
-                        }
-                    });
-
-                    if (newUpdates) {
-                        notificationBadge.classList.remove('hidden');
-                        const messages = updatedCategories.map(cat => notificationMessages[cat]).join(' ');
-                        notificationMessage.textContent = messages;
-                    } else {
-                        notificationBadge.classList.add('hidden');
-                    }
-                }, (error) => {
-                    console.error("Error listening to category updates:", error);
-                });
-            }, (error) => {
-                console.error("Error listening to user document:", error);
-            });
-        }
-
-        async function updateCategory(category) {
-            const docRef = doc(db, `/artifacts/${appId}/public/data/category-updates/${category}`);
-            try {
-                await setDoc(docRef, { lastUpdateTimestamp: new Date().toISOString() }, { merge: true });
-                console.log(`Updated timestamp for ${category}.`);
-                showMessageBox(`Successfully updated the timestamp for the ${category} category.`);
-            } catch (error) {
-                console.error(`Error updating timestamp for ${category}:`, error);
-                showMessageBox(`Failed to update ${category}. Please check the console.`);
-            }
-        }
-        
-        // Initial rendering of all articles on load
-        document.addEventListener('DOMContentLoaded', async () => {
-            renderArticlePreviews(articles, "Our Latest Articles");
-            await initializeFirebase();
-            checkWebsiteUpdates();
-        });
-
-        // Event listeners for new buttons
-        subscribeBtn.addEventListener('click', subscribeUser);
-        notificationBtn.addEventListener('click', () => {
-            notificationModal.style.display = 'flex';
-            notificationBadge.classList.add('hidden');
-            // Update the user's last notified timestamp to prevent repeated notifications
-            const userDocRef = doc(db, `/artifacts/${appId}/public/data/subscribers/${userId}`);
-            const categoryUpdatesCol = collection(db, `/artifacts/${appId}/public/data/category-updates`);
-
-            // Fetch the latest timestamps from all categories and update the user's document
-            getDocs(categoryUpdatesCol).then((snapshot) => {
-                const latestTimestamps = {};
-                snapshot.forEach((doc) => {
-                    latestTimestamps[doc.id] = doc.data().lastUpdateTimestamp;
-                });
-                return setDoc(userDocRef, { lastNotified: latestTimestamps }, { merge: true });
-            }).then(() => {
-                console.log("User's last notified timestamps updated successfully.");
-            }).catch((error) => {
-                console.error("Error updating user's notification timestamps:", error);
-            });
-        });
-        
-        closeNotificationBtn.addEventListener('click', () => {
-            notificationModal.style.display = 'none';
-        });
-
-        // Admin panel button listeners
-        document.getElementById('update-finance').addEventListener('click', () => updateCategory('finance'));
-        document.getElementById('update-technology').addEventListener('click', () => updateCategory('technology'));
-        document.getElementById('update-entertainment').addEventListener('click', () => updateCategory('entertainment'));
+    <!-- Console Command to Simulate an Update -->
+    <script>
+        // To test the notification system, copy and paste this command into your browser's console and press enter.
+        // It simulates a new article being published and will trigger a notification on the next page load.
+        // To trigger a notification, you must be subscribed and the number below must be higher than the last article ID you've seen.
+        // `doc(db, 'artifacts', __app_id, 'public', 'data', 'updates', 'latest_update')`
+        // `setDoc(docRef, { articleId: 20 })`
     </script>
 </body>
 </html>
