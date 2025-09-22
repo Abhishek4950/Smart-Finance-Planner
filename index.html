@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A professional financial planning website with articles and calculators for smart money management.">
+  <title>Smart Finance Planner</title>
+
+  <!-- Canonical link tag to prevent duplicate content issues.
+  Be sure to update the href with your actual website URL. -->
+  <link rel="canonical" href="https://yourwebsite.com/index.html">
+
+  <!-- Open Graph Meta Tags for social media sharing -->
+  <meta property="og:title" content="Smart Finance Planner: Your Guide to Financial Freedom">
+  <meta property="og:description" content="A professional financial planning website with articles and calculators for smart money management.">
+  <meta property="og:image" content="https://placehold.co/1200x630/2563EB/ffffff?text=Smart+Finance+Planner">
+  <meta property="og:url" content="https://yourwebsite.com/index.html">
+  <meta property="og:type" content="website">
+
+  <!-- Schema.org Structured Data (JSON-LD) for search engines -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Smart Finance Planner",
+          "url": "https://yourwebsite.com",
+          "about": "A guide to financial planning and freedom.",
+          "description": "A professional financial planning website with articles and calculators for smart money management."
+        },
+        {
+          "@type": "Article",
+          "headline": "The Roadmap to Financial Freedom: A 1000-Word Guide",
+          "description": "A practical, step-by-step roadmap to help you navigate the journey toward true financial independence.",
+          "image": "https://img.freepik.com/free-photo/finance-concept_23-2148165794.jpg",
+          "author": {
+            "@type": "Person",
+            "name": "Financial Planner"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Smart Finance Planner",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://yourwebsite.com/logo.png"
+            }
+          },
+          "datePublished": "2025-09-22"
+        }
+      ]
+    }
+  </script>
+
+  <!-- Tailwind CSS CDN for modern styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for a clean, professional font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white py-12 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Smart Finance Planner</h1>
+      <p class="mt-4 text-xl sm:text-2xl font-light opacity-90">Your guide to financial freedom. Explore articles and use our tools to plan your future.</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- Articles Section -->
+    <section>
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Our Latest Articles</h2>
+      <div class="card-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="blogCards">
+        <!-- Cards will be generated dynamically -->
+      </div>
+    </section>
+
+    <!-- Dynamic Article Container -->
+    <div id="articleContainer" class="bg-white rounded-xl shadow-2xl p-8 mt-12 transition-all duration-300" style="display:none;">
+      <div class="mb-8">
+        <img id="articleImage" src="" alt="Article image" class="w-full h-72 object-cover rounded-xl shadow-md">
+      </div>
+      <div class="article-content text-lg leading-relaxed">
+        <h2 id="articleTitle" class="text-4xl font-bold text-blue-600 mb-4"></h2>
+        <div id="articleText" class="prose max-w-none"></div>
+      </div>
+      <div id="navButtons" class="flex justify-between mt-8">
+        <button id="backBtn" class="flex items-center space-x-2 bg-gray-200 text-gray-700 py-3 px-6 rounded-full font-semibold hover:bg-gray-300 transition-colors duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          <span>Back to Articles</span>
+        </button>
+        <button id="nextBtn" class="flex items-center space-x-2 bg-blue-600 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">
+          <span>Next Article</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <hr class="my-12 border-t-2 border-gray-200">
+
+    <!-- Financial Calculators Section -->
+    <section class="calculator-container bg-white rounded-xl shadow-2xl p-8">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Financial Calculators</h2>
+      <div class="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8">
+
+        <!-- SIP Calculator -->
+        <div class="calculator-card flex-1 bg-blue-50 p-6 rounded-xl shadow-md">
+          <h3 class="text-2xl font-semibold text-blue-800 mb-6">SIP Calculator</h3>
+          <div class="calculator-input mb-6">
+            <label for="sipAmount" class="block font-medium mb-2">Monthly Investment (₹):</label>
+            <input type="number" id="sipAmount" value="5000" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+          <div class="calculator-input mb-6">
+            <label for="sipReturn" class="block font-medium mb-2">Expected Return Rate (% p.a.):</label>
+            <input type="number" id="sipReturn" value="12" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+          <div class="calculator-input mb-8">
+            <label for="sipYears" class="block font-medium mb-2">Time Period (Years):</label>
+            <input type="number" id="sipYears" value="10" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+          <button class="calc-button w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors" onclick="calculateSIP()">Calculate SIP</button>
+          <div class="calculator-result mt-6 text-center text-lg font-bold" id="sipResult"></div>
+        </div>
+
+        <!-- Lumpsum Calculator -->
+        <div class="calculator-card flex-1 bg-blue-50 p-6 rounded-xl shadow-md">
+          <h3 class="text-2xl font-semibold text-blue-800 mb-6">Lumpsum Calculator</h3>
+          <div class="calculator-input mb-6">
+            <label for="lumpsumAmount" class="block font-medium mb-2">Total Investment (₹):</label>
+            <input type="number" id="lumpsumAmount" value="100000" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+          <div class="calculator-input mb-6">
+            <label for="lumpsumReturn" class="block font-medium mb-2">Expected Return Rate (% p.a.):</label>
+            <input type="number" id="lumpsumReturn" value="12" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+          <div class="calculator-input mb-8">
+            <label for="lumpsumYears" class="block font-medium mb-2">Time Period (Years):</label>
+            <input type="number" id="lumpsumYears" value="10" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+          </div>
+          <button class="calc-button w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors" onclick="calculateLumpsum()">Calculate Lumpsum</button>
+          <div class="calculator-result mt-6 text-center text-lg font-bold" id="lumpsumResult"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="mt-12 py-8 bg-gray-100 text-center text-gray-500 text-sm">
+    <p>Disclaimer: This website and its content are for informational and educational purposes only. The calculators and articles are not intended to be and do not constitute financial advice. You should not make any financial decisions based on the information provided here without consulting a qualified financial professional.</p>
+  </footer>
+
+  <script>
+    // All articles with their full content, now fully in English
+    const articles = [
+      {
+        title: "10 Smart Financial Planning Tips for Beginners",
+        content: `
+          <p>Financial planning is a crucial step that can help you secure your future and achieve your goals. Here are 10 easy and smart financial tips for beginners:</p>
+          <h3>1. Create and Stick to a Budget</h3>
+          <p>This is the most important part of financial planning. Track your monthly income and expenses. A budget helps you understand where your money is going and where you can cut unnecessary expenses.</p>
+          <h3>2. Build an Emergency Fund</h3>
+          <p>Having an emergency fund is essential for unexpected situations, such as job loss or medical emergencies. Keep an amount equal to 3-6 months of living expenses in a savings account.</p>
+          <h3>3. Get Rid of High-Interest Debts</h3>
+          <p>High interest on credit cards or personal loans can drain your wealth quickly. First, focus on paying off the highest-interest debts.</p>
+          <h3>4. Set Clear Financial Goals</h3>
+          <p>Whether it's buying a house, saving for retirement, or just saving a specific amount in a year, having clear goals is very important. Write down these goals with a timeline.</p>
+          <h3>5. Start Investing Early</h3>
+          <p>Start investing as early as possible to take advantage of the "power of compounding." Even if it's a small amount, like an SIP, it can give huge returns in the long run.</p>
+          <h3>6. Monitor Your Spending Habits</h3>
+          <p>Use an app or a spreadsheet to record all your expenses. This will help you identify areas where you can save.</p>
+          <h3>7. Get Insurance</h3>
+          <p>Take basic insurance like life, health, and term insurance. Insurance protects you from unexpected events and helps maintain your financial stability.</p>
+          <h3>8. Understand and Improve Your Credit Score</h3>
+          <p>A good credit score is important for getting loans and credit cards in the future. Maintain it by paying bills on time and keeping your credit utilization low.</p>
+          <h3>9. Educate Yourself Financially</h3>
+          <p>Read about investment types, taxes, and money management. Books, podcasts, and reliable websites can help you become financially literate.</p>
+          <h3>10. Regularly Review Your Financial Plan</h3>
+          <p>Life changes, and so can your financial goals. Regularly review your budget and investments to ensure you are on the right track.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/finance-concept_23-2148165794.jpg"
+      },
+      {
+        title: "How to Create a Monthly Budget That Actually Works",
+        content: `
+          <p>Creating an effective monthly budget is both an art and a science. It's a tool that can help you take control of your money. Follow the steps below:</p>
+          <h3>1. Find Your Monthly Income</h3>
+          <p>Add up your total income from all sources. This includes your salary, freelancing income, or any other regular income.</p>
+          <h3>2. Track All Your Expenses</h3>
+          <p>Record every expense you make for a month. This includes things like rent, electricity bills, groceries, and entertainment.</p>
+          <h3>3. Implement the 50/30/20 Rule</h3>
+          <p>This is a simple budgeting rule. Spend 50% of your income on "Needs," 30% on "Wants," and put 20% towards "Savings & Debt."</p>
+          <h3>4. Customize the Budget</h3>
+          <p>Adjust your budget according to your goals and lifestyle. If you are saving for a house, you can increase the savings portion.</p>
+          <h3>5. Review Regularly</h3>
+          <p>Review your budget monthly. See where you were successful and where you need to improve. This will help you stay on track.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/budget-planning_23-2148127345.jpg"
+      },
+      {
+        title: "Top 7 Investment Options for 2025",
+        content: `
+          <p>There are many investment options. Based on your financial goals and risk tolerance, you can choose from these top 7 options:</p>
+          <h3>1. Mutual Funds</h3>
+          <p>The most popular option for small investors. You can invest small amounts regularly through SIPs.</p>
+          <h3>2. Stock Market</h3>
+          <p>High return potential, but also high risk. Choose stocks of good companies for long-term investment.</p>
+          <h3>3. Government Schemes</h3>
+          <p>Options like Public Provident Fund (PPF) and National Pension Scheme (NPS) provide safe and tax-free returns.</p>
+          <h3>4. Real Estate</h3>
+          <p>A long-standing investment option. Buying property can give you both rental income and capital appreciation.</p>
+          <h3>5. Gold</h3>
+          <p>Considered a safe investment, especially during times of economic uncertainty. You can invest in physical gold or Sovereign Gold Bonds.</p>
+          <h3>6. Fixed Deposits</h3>
+          <p>A safe option for low-risk investors. You can open a fixed deposit with a bank or post office.</p>
+          <h3>7. Bonds and Debentures</h3>
+          <p>You can earn a fixed income by lending to a company or government. These are less volatile compared to mutual funds and stocks.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/indian-stock-market_23-2148189452.jpg"
+      },
+      {
+        title: "How to Build an Emergency Fund: A Complete Guide",
+        content: `
+          <p>An emergency fund is a financial safety net that prepares you for unexpected expenses.</p>
+          <h3>Why is it important?</h3>
+          <p>An emergency fund covers unexpected expenses like job loss, medical emergencies, or home repairs. It saves you from taking out a loan.</p>
+          <h3>How much should you save?</h3>
+          <p>Financial advisors suggest that you should save an amount equal to 3 to 6 months of living expenses.</p>
+          <h3>Where to keep the money?</h3>
+          <p>Keep it in a high-yield savings account or a short-term fixed deposit. It should be easily accessible.</p>
+          <h3>How to start?</h3>
+          <p>Set aside a fixed amount from your budget every month. Do this right after you get your salary. Start small and gradually reach your goal.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/saving-money-jar_23-2148134278.jpg"
+      },
+      {
+        title: "Retirement Planning: How Much Should You Save by Age?",
+        content: `
+          <p>Planning for retirement is a long journey, and the earlier you start, the better. Here are some savings tips according to your age:</p>
+          <h3>In your 20s: Start as early as possible</h3>
+          <p>At this age, you can take full advantage of the magic of compounding. Start saving 10% to 15% of your income for retirement. Investing in a SIP or a mutual fund is a good option.</p>
+          <h3>In your 30s: Increase your savings</h3>
+          <p>Your income is likely to increase in this decade. Increase your savings to 15% to 20%. Continue to invest in equity according to your risk tolerance.</p>
+          <h3>In your 40s: Review your goals</h3>
+          <p>Now is the time to review your retirement goals and see if you are on the right track. Try to increase your savings rate to 20% to 25%. Also, consider making your portfolio a little more stable.</p>
+          <h3>In your 50s: Finalize your strategy</h3>
+          <p>At this time, your goal should be to grow your savings and make your investment strategy risk-free. Start putting money into more secure investment options, such as fixed deposits or bonds.</p>
+          <h3>Conclusion</h3>
+          <p>No matter what your age is, the most important thing is to start today. Consistent savings and the right investments will help you ensure a secure retirement.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/retirement-planning-concept_23-2148165787.jpg"
+      },
+      {
+        title: "Best Tax-Saving Investments Under Section 80C",
+        content: `
+          <p>Section 80C of the Indian Income Tax Act allows you to save tax on investments up to ₹1.5 lakhs. Here are some popular options:</p>
+          <h3>1. Equity Linked Savings Scheme (ELSS)</h3>
+          <p>ELSS is a type of mutual fund that invests in stocks. Its lock-in period is only 3 years and it can give good returns in the long run.</p>
+          <h3>2. Public Provident Fund (PPF)</h3>
+          <p>PPF is a government scheme that provides safe and tax-free returns. Its lock-in period is 15 years and it is a good option for those who do not want to take risks.</p>
+          <h3>3. National Pension Scheme (NPS)</h3>
+          <p>NPS is a retirement plan that helps you build a large fund in the long run. It also gets additional tax benefits under Section 80C.</p>
+          <h3>4. Term Insurance</h3>
+          <p>Term insurance premiums are also tax-deductible under Section 80C. It is an essential financial safety net for your family.</p>
+          <h3>5. Fixed Deposits (Tax-Saving FDs)</h3>
+          <p>These FDs offered by banks and post offices come with a 5-year lock-in period and provide safe returns.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/tax-saving-india_23-2148291889.jpg"
+      },
+      {
+        title: "How to Improve Your Credit Score Fast",
+        content: `
+          <p>Your credit score determines whether you will get a loan or credit card in the future. Take these steps to improve it quickly:</p>
+          <h3>1. Pay your bills on time</h3>
+          <p>This is the most important factor of a credit score. Pay your credit card bills and loan EMIs on time.</p>
+          <h3>2. Keep your credit utilization low</h3>
+          <p>Do not use more than 30% of your total credit card limit. For example, if your credit limit is ₹1 lakh, do not spend more than ₹30,000.</p>
+          <h3>3. Keep old credit lines open</h3>
+          <p>Do not close your oldest credit cards, as this can reduce the length of your credit history.</p>
+          <h3>4. Check your credit report</h3>
+          <p>Regularly check your credit report and immediately correct any mistakes or errors.</p>
+          <h3>5. Avoid unnecessary new loans</h3>
+          <p>Do not apply for new credit cards or loans frequently. This can have a negative impact on your score.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/credit-score-india_23-2148291782.jpg"
+      },
+      {
+        title: "Why Term Insurance is a Must for Financial Security",
+        content: `
+          <p>Term insurance is a pure life insurance plan that provides financial security to your family for a fixed term. It is an investment that everyone should have.</p>
+          <h3>Low Cost, High Coverage</h3>
+          <p>The biggest feature of term insurance is its low premium cost. You can get a large amount of life cover by paying a small premium.</p>
+          <h3>Family Protection</h3>
+          <p>In the unfortunate event of your demise, the policy amount is given to your family. This helps your family remain financially independent and secures their future.</p>
+          <h3>Debt Repayment</h3>
+          <p>If you have a home loan or other loans, term insurance ensures that your family does not have to struggle to repay those loans after you.</p>
+          <h3>Tax Benefits</h3>
+          <p>Term insurance premiums are tax-deductible under Section 80C, and the maturity amount is also tax-free.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/insurance-concept_23-2148165739.jpg"
+      },
+      {
+        title: "Top 5 Passive Income Ideas to Grow Your Wealth",
+        content: `
+          <p>Passive income is income you receive with little active participation. It's a great way to grow your wealth quickly.</p>
+          <h3>1. Dividend Stocks and Mutual Funds</h3>
+          <p>Invest in the stock market and choose shares of companies that pay regular dividends. This can become a source of regular income for you.</p>
+          <h3>2. Real Estate</h3>
+          <p>Earn rental income from rented property. This is a stable and reliable source of passive income.</p>
+          <h3>3. Blogging or a YouTube Channel</h3>
+          <p>Share your knowledge and passion on a blog or YouTube channel. Once your audience grows, you can earn through advertisements, sponsorships, and affiliate marketing.</p>
+          <h3>4. Peer-to-Peer Lending</h3>
+          <p>Lend to other individuals through a digital platform and earn interest. This is a new and attractive option.</p>
+          <h3>5. Sell Digital Products</h3>
+          <p>Create and sell digital products like e-books, online courses, or stock photos. Once created, they can be sold again and again.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/passive-income-ideas_23-2148189712.jpg"
+      },
+      {
+        title: "Financial Mistakes to Avoid in Your 20s and 30s",
+        content: `
+          <p>Your 20s and 30s are crucial for laying the foundation of your financial future. Avoid these common mistakes:</p>
+          <h3>1. Delaying Savings</h3>
+          <p>Starting to save and invest early gives you the full benefit of compounding. Avoid the mindset of "I'll do it tomorrow."</p>
+          <h3>2. Taking Expensive Loans</h3>
+          <p>Avoid high-interest loans like credit card debt or personal loans. They can become the biggest hurdle in your financial progress.</p>
+          <h3>3. Not Building an Emergency Fund</h3>
+          <p>Without an emergency fund, unexpected expenses can force you to take out a loan. Start saving from your salary immediately.</p>
+          <h3>4. Ignoring Insurance</h3>
+          <p>Consider health and term insurance as an investment, not an expense. It protects you from financial crises.</p>
+          <h3>5. Spending More Than Your Income</h3>
+          <p>Stick to your budget. Do not spend on unnecessary things due to social pressure.</p>
+        `,
+        image: "https://img.freepik.com/free-photo/young-adults-financial-mistakes_23-2148165769.jpg"
+      }
+    ];
+
+    // Generate blog cards dynamically
+    const blogCardsContainer = document.getElementById('blogCards');
+    articles.forEach((article, index) => {
+      const card = document.createElement('div');
+      card.className = 'card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden';
+      card.innerHTML = `
+        <img src="${article.image}" alt="${article.title}" class="w-full h-40 object-cover">
+        <div class="p-6">
+          <h3 class="text-xl font-semibold text-blue-600">${article.title}</h3>
+        </div>
+      `;
+      card.addEventListener('click', () => showArticle(index));
+      blogCardsContainer.appendChild(card);
+    });
+
+    // Show a specific article
+    let currentIndex = 0;
+    const articleContainer = document.getElementById('articleContainer');
+    const blogCardsGrid = document.getElementById('blogCards');
+    const titleEl = document.getElementById('articleTitle');
+    const textEl = document.getElementById('articleText');
+    const imageEl = document.getElementById('articleImage');
+
+    function showArticle(index) {
+      currentIndex = index;
+      const article = articles[currentIndex];
+
+      // Set content using innerHTML for formatted text
+      titleEl.innerText = article.title;
+      textEl.innerHTML = article.content;
+      imageEl.src = article.image;
+
+      blogCardsGrid.style.display = 'none';
+      articleContainer.style.display = 'block';
+      articleContainer.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Back to articles button
+    document.getElementById('backBtn').addEventListener('click', () => {
+      articleContainer.style.display = 'none';
+      blogCardsGrid.style.display = 'grid';
+    });
+
+    // Next Article button
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % articles.length;
+      showArticle(currentIndex);
+    });
+
+    // SIP Calculator Function
+    function calculateSIP() {
+      const amount = parseFloat(document.getElementById('sipAmount').value);
+      const rate = parseFloat(document.getElementById('sipReturn').value);
+      const years = parseFloat(document.getElementById('sipYears').value);
+
+      if (isNaN(amount) || isNaN(rate) || isNaN(years) || amount <= 0 || rate <= 0 || years <= 0) {
+        document.getElementById('sipResult').innerText = "Please enter valid positive numbers.";
+        return;
+      }
+
+      const monthlyRate = rate / 100 / 12;
+      const months = years * 12;
+
+      const futureValue = amount * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+      const investedAmount = amount * months;
+      const totalEarnings = futureValue - investedAmount;
+
+      document.getElementById('sipResult').innerHTML = `
+        <p><strong>Invested Amount:</strong> ₹${investedAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+        <p><strong>Total Earnings:</strong> ₹${totalEarnings.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+        <p class="text-blue-600"><strong>Future Value:</strong> ₹${futureValue.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+      `;
+    }
+
+    // Lumpsum Calculator Function
+    function calculateLumpsum() {
+      const amount = parseFloat(document.getElementById('lumpsumAmount').value);
+      const rate = parseFloat(document.getElementById('lumpsumReturn').value);
+      const years = parseFloat(document.getElementById('lumpsumYears').value);
+
+      if (isNaN(amount) || isNaN(rate) || isNaN(years) || amount <= 0 || rate <= 0 || years <= 0) {
+        document.getElementById('lumpsumResult').innerText = "Please enter valid positive numbers.";
+        return;
+      }
+
+      const annualRate = rate / 100;
+
+      const futureValue = amount * Math.pow(1 + annualRate, years);
+      const totalEarnings = futureValue - amount;
+
+      document.getElementById('lumpsumResult').innerHTML = `
+        <p><strong>Invested Amount:</strong> ₹${amount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+        <p><strong>Total Earnings:</strong> ₹${totalEarnings.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+        <p class="text-blue-600"><strong>Future Value:</strong> ₹${futureValue.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
