@@ -120,9 +120,14 @@
         </div>
     </header>
 
+    <!-- Subscription Confirmation Toast -->
+    <div id="subscriptionToast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg z-50 transform scale-0 opacity-0 transition-all duration-300 ease-out">
+        आप अब सफलतापूर्वक सब्सक्राइब हो गए हैं!
+    </div>
+
     <!-- Notification Modal -->
     <div id="notificationModal" class="notification-modal-overlay">
-        <div class="notification-modal-content">
+        <div class="notification-modal-content" data-category="">
             <h3 class="text-2xl font-bold mb-4">You have a new update!</h3>
             <p id="notificationMessage" class="text-gray-600">You have a new update.</p>
             <p id="userIdDisplay" class="text-xs text-gray-400 mt-4 break-all"></p>
@@ -275,6 +280,7 @@
         const readNowBtn = document.getElementById('readNowBtn');
         const closeNotificationBtn = document.getElementById('closeNotificationBtn');
         const subscribeBtn = document.getElementById('subscribeBtn');
+        const subscriptionToast = document.getElementById('subscriptionToast');
 
         // All articles with their full content, now including Technology and Entertainment
         const articles = [
@@ -305,8 +311,10 @@
             { id: 20, category: "entertainment", title: "The Evolution of Streaming Services", content: "<p>Streaming services have completely changed how we watch movies and TV. As the market becomes more crowded, these services are evolving to stay ahead of the competition.</p><h3>1. The Rise of 'Hybrid' Services</h3><p>Many services are now offering a mix of ad-supported and ad-free tiers, giving consumers more choice. This has also led to a return to live sports and news on streaming platforms.</p><h3>2. Focus on Original Content</h3><p>To attract and retain subscribers, services are investing heavily in original content. This has led to a creative boom, with more high-quality and unique shows and movies being produced than ever before.</p><h3>3. A Push for Personalization</h3><p>Streaming platforms are using AI to offer hyper-personalized recommendations. They are also creating new features, like interactive shows and personalized homepages, to enhance the viewing experience.</p>", image: "https://img.freepik.com/free-photo/streaming-service-concept_23-2148169422.jpg" }
         ];
 
+        const categories = ["finance", "technology", "entertainment"];
         let currentCategory = 'all';
-
+        let latestUpdates = {};
+        
         // Check for subscription status on page load
         if (typeof localStorage !== 'undefined') {
             userHasSubscribed = localStorage.getItem('userSubscribed') === 'true';
@@ -416,6 +424,7 @@
         renderCards('all');
 
         // --- Firebase Functions ---
+        // Firestore में उपयोगकर्ता की सदस्यता की स्थिति अपडेट करता है।
         const updateSubscriptions = async (uid) => {
             if (!db || !uid) return;
             const docRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'subscription');
@@ -428,45 +437,68 @@
             }
         };
 
-        const updateLastSeenArticle = async (uid, articleId) => {
+        // Firestore में उपयोगकर्ता द्वारा देखे गए अंतिम लेख (last seen article) को अपडेट करता है।
+        const updateLastSeenArticle = async (uid, category, articleId) => {
             if (!db || !uid) return;
-            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'lastSeen');
+            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'last_seen_updates', category);
             try {
                 await setDoc(docRef, { lastSeenArticleId: articleId }, { merge: true });
-                console.log("User last seen article updated:", articleId);
+                console.log(`User last seen article updated for ${category}:`, articleId);
             } catch (e) {
                 console.error("Error updating last seen article:", e);
             }
         };
 
+        // यह जाँचता है कि किसी श्रेणी में कोई नया अपडेट है या नहीं।
         const checkForUpdates = async (uid) => {
-            if (!db || !uid) return;
-            try {
-                // Get the user's last seen article ID
-                const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'lastSeen');
-                const userDocSnap = await getDoc(userDocRef);
-                const lastSeenId = userDocSnap.exists() ? userDocSnap.data().lastSeenArticleId : 0;
-                
-                // Get the latest published article ID from the public updates collection
-                const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', 'latest_update');
-                const updatesDocSnap = await getDoc(updatesDocRef);
+            if (!db || !uid || !userHasSubscribed) return;
 
-                if (updatesDocSnap.exists()) {
-                    const latestArticleId = updatesDocSnap.data().articleId;
+            notificationBadge.classList.add('hidden');
+            
+            for (const category of categories) {
+                try {
+                    // उपयोगकर्ता का अंतिम देखा गया लेख ID प्राप्त करें।
+                    const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'last_seen_updates', category);
+                    const userDocSnap = await getDoc(userDocRef);
+                    const lastSeenId = userDocSnap.exists() ? userDocSnap.data().lastSeenArticleId : 0;
                     
-                    if (userHasSubscribed && latestArticleId > lastSeenId) {
-                        const article = articles.find(a => a.id === latestArticleId);
-                        if (article) {
+                    // सार्वजनिक अपडेट संग्रह से नवीनतम प्रकाशित लेख ID प्राप्त करें।
+                    const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'public_updates', category);
+                    const updatesDocSnap = await getDoc(updatesDocRef);
+
+                    if (updatesDocSnap.exists()) {
+                        const latestArticleData = updatesDocSnap.data();
+                        const latestArticleId = latestArticleData.latestArticleId;
+                        const latestArticleTitle = latestArticleData.latestArticleTitle;
+                        
+                        if (latestArticleId > lastSeenId) {
                             notificationBadge.classList.remove('hidden');
-                            notificationMessage.textContent = `New article published: "${article.title}"!`;
-                            readNowBtn.href = `#article-${article.id}`;
-                            notificationModal.style.display = 'flex';
+                            notificationMessage.innerHTML = `**${category.charAt(0).toUpperCase() + category.slice(1)}** श्रेणी में एक नया लेख प्रकाशित हुआ है: "${latestArticleTitle}"!`;
+                            
+                            const article = articles.find(a => a.id === latestArticleId);
+                            if (article) {
+                                readNowBtn.href = `#article-${article.id}`;
+                                notificationModal.setAttribute('data-category', category); // श्रेणी को modal में संग्रहीत करें
+                                notificationModal.style.display = 'flex';
+                            }
+                            // एक बार सूचना दिखाने के बाद लूप को रोक दें।
+                            return; 
                         }
                     }
+                } catch (e) {
+                    console.error(`Error checking for updates in ${category}:`, e);
                 }
-            } catch (e) {
-                console.error("Error checking for updates:", e);
             }
+        };
+
+        // सदस्यता की पुष्टि के लिए एक अस्थायी सूचना दिखाता है।
+        const showSubscriptionToast = () => {
+            subscriptionToast.classList.remove('scale-0', 'opacity-0');
+            subscriptionToast.classList.add('scale-100', 'opacity-100');
+            setTimeout(() => {
+                subscriptionToast.classList.remove('scale-100', 'opacity-100');
+                subscriptionToast.classList.add('scale-0', 'opacity-0');
+            }, 3000);
         };
 
         // --- Event Listeners for Firebase & UI ---
@@ -481,6 +513,7 @@
                     subscribeBtn.disabled = true;
                     subscribeBtn.classList.remove('bg-white', 'text-blue-600');
                     subscribeBtn.classList.add('bg-green-500', 'text-white');
+                    showSubscriptionToast();
                     if (userId) {
                         updateSubscriptions(userId);
                     }
@@ -494,8 +527,8 @@
                 e.preventDefault(); // Prevent default link behavior
                 notificationModal.style.display = 'none';
                 notificationBadge.classList.add('hidden');
-                
-                // Get the article ID and category from the link href
+
+                const category = notificationModal.getAttribute('data-category');
                 const link = e.target.href;
                 const articleId = parseInt(link.split('-').pop());
                 const article = articles.find(a => a.id === articleId);
@@ -504,7 +537,7 @@
                     currentCategory = article.category;
                     showArticle(articleId);
                     if (userId) {
-                        await updateLastSeenArticle(userId, articleId);
+                        await updateLastSeenArticle(userId, category, articleId);
                     }
                 }
             });
@@ -515,13 +548,14 @@
                 notificationModal.style.display = 'none';
                 notificationBadge.classList.add('hidden');
                 
-                // Mark the notification as seen by updating the user's last seen article ID
-                const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'updates', 'latest_update');
+                // नवीनतम लेख को उपयोगकर्ता द्वारा देखा गया (seen) चिह्नित करें।
+                const category = notificationModal.getAttribute('data-category');
+                const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'public_updates', category);
                 const updatesDocSnap = await getDoc(updatesDocRef);
                 if (updatesDocSnap.exists()) {
-                    const latestArticleId = updatesDocSnap.data().articleId;
+                    const latestArticleId = updatesDocSnap.data().latestArticleId;
                     if (userId) {
-                        await updateLastSeenArticle(userId, latestArticleId);
+                        await updateLastSeenArticle(userId, category, latestArticleId);
                     }
                 }
             });
@@ -602,13 +636,21 @@
         window.calculateLumpsum = calculateLumpsum;
     </script>
 
-    <!-- Console Command to Simulate an Update -->
+    <!-- Console Commands to Simulate an Update (परीक्षण करने के लिए इन कमांड्स का उपयोग करें) -->
     <script>
-        // To test the notification system, copy and paste this command into your browser's console and press enter.
-        // It simulates a new article being published and will trigger a notification on the next page load.
-        // To trigger a notification, you must be subscribed and the number below must be higher than the last article ID you've seen.
-        // `doc(db, 'artifacts', __app_id, 'public', 'data', 'updates', 'latest_update')`
-        // `setDoc(docRef, { articleId: 20 })`
+        // इस कमांड को कंसोल में कॉपी और पेस्ट करें और एंटर दबाएं।
+        // यह एक नए 'finance' लेख के प्रकाशन का अनुकरण करता है।
+        // 'latestArticleId' और 'latestArticleTitle' को अपनी आवश्यकतानुसार बदल सकते हैं।
+        // doc(db, 'artifacts', __app_id, 'public', 'data', 'public_updates', 'finance')
+        // setDoc(docRef, { latestArticleId: 10, latestArticleTitle: "Financial Mistakes to Avoid in Your 20s and 30s" })
+        
+        // यह कमांड एक नए 'technology' लेख के प्रकाशन का अनुकरण करता है।
+        // doc(db, 'artifacts', __app_id, 'public', 'data', 'public_updates', 'technology')
+        // setDoc(docRef, { latestArticleId: 15, latestArticleTitle: "5G vs. 6G: What's the Next Frontier?" })
+
+        // यह कमांड एक नए 'entertainment' लेख के प्रकाशन का अनुकरण करता है।
+        // doc(db, 'artifacts', __app_id, 'public', 'data', 'public_updates', 'entertainment')
+        // setDoc(docRef, { latestArticleId: 20, latestArticleTitle: "The Evolution of Streaming Services" })
     </script>
 </body>
 </html>
