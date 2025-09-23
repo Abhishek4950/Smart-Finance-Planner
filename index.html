@@ -22,6 +22,16 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
 
+ <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "01c692ea-2278-4e14-b579-239c3c77edde",
+    });
+  });
+</script>
+    
     <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -677,6 +687,7 @@
     </script>
 </body>
 </html>
+
 
 
 
