@@ -8,7 +8,20 @@
 
     <!-- Canonical link tag to prevent duplicate content issues.
     Be sure to update the href with your actual website URL. -->
-    <link rel="canonical" href="https://yourwebsite.com/index.html">
+    <link rel="canonical" href="https://yourwebsite.com/index.html"> 
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "01c692ea-2278-4e14-b579-239c3c77edde",
+      safari_web_id: "web.onesignal.auto.5f8d50ad-7ec3-4f1c-a2de-134e8949294e",
+      notifyButton: {
+        enable: true,
+      },
+    });
+  });
+</script>
 
     <!-- Open Graph Meta Tags for social media sharing -->
     <meta property="og:title" content="Smart Finance Planner: Your Guide to Financial Freedom">
@@ -52,6 +65,7 @@
         ]
       }
     </script>
+    
 
     <!-- Tailwind CSS CDN for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -655,5 +669,6 @@
     </script>
 </body>
 </html>
+
 
 
