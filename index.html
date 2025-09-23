@@ -22,71 +22,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
 
-<script>
-  // Firebase Config (replace with your own)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCW6BvJNFdoEivpJEOfvIBMph7QvpHGKiU",
-    authDomain: "smart-finance-planner-fe9ef.firebaseapp.com",
-    projectId: "smart-finance-planner-fe9ef",
-    storageBucket: "smart-finance-planner-fe9ef.firebasestorage.app",
-    messagingSenderId: "585527963445",
-    appId: "1:585527963445:web:f903cca3b5413b0502667c",
-  };
-
-  // Init
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const messaging = firebase.messaging();
-
-  // Notification permission
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      console.log("Notification permission granted.");
-
-      // Get FCM Token
-      messaging.getToken({ vapidKey: "BMXAyruk1mK13uhZJUiqEYfmO84t6K9S0_wLpxu3iZRDfndaD1JoJrLJwkpUsRl_1dK4V5YFEkv9WOU_e15noi0" }).then((token) => {
-        console.log("User FCM Token: ", token);
-
-        // Save to Firestore
-        db.collection("subscribers").add({
-          token: token,
-          subscribedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-          console.log("✅ Token saved to Firestore");
-        });
-      });
-    } else {
-      console.log("❌ User denied notifications");
-    }
-  });
-</script>
-  
-    importScripts("https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js");
-
-firebase.initializeApp({
-    apiKey: "AIzaSyCW6BvJNFdoEivpJEOfvIBMph7QvpHGKiU",
-    authDomain: "smart-finance-planner-fe9ef.firebaseapp.com",
-    projectId: "smart-finance-planner-fe9ef",
-    storageBucket: "smart-finance-planner-fe9ef.firebasestorage.app",
-    messagingSenderId: "585527963445",
-    appId: "1:585527963445:web:f903cca3b5413b0502667c",
-});
-
-const messaging = firebase.messaging();
-
-// Background push
-messaging.onBackgroundMessage(function(payload) {
-  console.log("Background message received: ", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
-    
-
     <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -742,6 +677,7 @@ messaging.onBackgroundMessage(function(payload) {
     </script>
 </body>
 </html>
+
 
 
 
