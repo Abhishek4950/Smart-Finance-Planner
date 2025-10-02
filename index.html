@@ -187,22 +187,24 @@
         </section>
 
         <!-- Dynamic Article Container -->
-        <div id="articleContainer" class="bg-white rounded-xl shadow-2xl p-8 mt-12 transition-all duration-300" style="display:none;">
+       <div id="articleContainer" class="bg-white rounded-xl shadow-2xl p-8 mt-12 transition-all duration-300" style="display:none;">
             <div class="mb-8">
-                <img id="articleImage" src="" alt="Article image" class="w-full h-72 object-cover rounded-xl shadow-md">
+                <img id="articleImage" src="" onerror="this.src='https://placehold.co/1200x400/3B82F6/ffffff?text=Financial+Article';" alt="Article image" class="w-full h-72 object-cover rounded-xl shadow-md">
             </div>
             <div class="article-content text-lg leading-relaxed">
                 <h2 id="articleTitle" class="text-4xl font-bold text-blue-600 mb-4"></h2>
-                <div id="articleText" class="prose max-w-none"></div>
+                <div id="articleText" class="prose max-w-none text-gray-700"></div>
             </div>
-            <div id="navButtons" class="flex justify-between mt-8">
+            <div id="navButtons" class="flex justify-between items-center mt-10">
                 <button id="backBtn" class="flex items-center space-x-2 bg-gray-200 text-gray-700 py-3 px-6 rounded-full font-semibold hover:bg-gray-300 transition-colors duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                     </svg>
                     <span>Back to Articles</span>
                 </button>
-                <button id="nextBtn" class="flex items-center space-x-2 bg-blue-600 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">
+                <div class="text-gray-500 italic text-sm" id="articleCategoryDisplay"></div>
+                <button id="nextBtn" class="flex items-center space-x-2 bg-blue-600 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200" style="display:none;">
+                    <span>Next Article</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
@@ -260,7 +262,7 @@
     </main>
 
     <footer class="mt-12 py-8 bg-gray-100 text-center text-gray-500 text-sm">
-        <p>About us : Smart Finance Planner is committed to outlay in giving focused, research based direction on finance, investing, individual financial planning, deceiving stock market tactics, toxication outweighing, and acumenate money management advice. We wish to ensure that the information our readers obtain is used to make sound financial choices, build wealth and acquire a long-term economic stability.</p> <p>contact us : Whether you have questions, suggestions , feel free to contact us at:📧 Email: bgsgolu199@gmail.com</p>
+        <p>About us : Smart Finance Planner is committed to outlay in giving focused, research based direction on finance, investing, individual financial planning, deceiving stock market tactics, toxication outweighing, and acumenate money management advice. We wish to ensure that the information our readers obtain is used to make sound financial choices, build wealth and acquire a long-term economic stability.</p> <p>contact us : Whether you have questions, suggestions , feel free to contact us at 📧 Email: bgsgolu199@gmail.com</p>
           <p>Terms & Conditions : The information on this website is strictly not financial advice but educative and informative only, all information is our intellectual property which is not copyable, reusable or commercial, we are not liable on any loss, third-party/affiliated links may present and are not under our authority and there may be latest terms and conditions which are always on this page.</p>        
         <p>Disclaimer: This website and its content are for informational and educational purposes only. The calculators and articles are not intended to be and do not constitute financial advice. You should not make any financial decisions based on the information provided here without consulting a qualified financial professional.</p>
     </footer>
@@ -680,6 +682,7 @@
     </script>
 </body>
 </html>
+
 
 
 
