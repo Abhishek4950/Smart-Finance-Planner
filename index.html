@@ -4,23 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A professional financial planning website with articles and calculators for smart money management.">
-    <title>News Hub: Smart Finance Planner</title>
+    <title>Smart Finance Planner</title>
 
-    <!-- Canonical link tag -->
+    <!-- Canonical link tag to prevent duplicate content issues.
+    Be sure to update the href with your actual website URL. -->
     <link rel="canonical" href="https://yourwebsite.com/index.html"> 
 
     <!-- Open Graph Meta Tags for social media sharing -->
-    <meta property="og:title" content="News Hub: Smart Finance Planner">
+    <meta property="og:title" content="Smart Finance Planner: Your Guide to Financial Freedom">
     <meta property="og:description" content="A professional financial planning website with articles and calculators for smart money management.">
     <meta property="og:image" content="https://placehold.co/1200x630/2563EB/ffffff?text=Smart+Finance+Planner">
     <meta property="og:url" content="https://yourwebsite.com/index.html">
     <meta property="og:type" content="website">
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+
+ <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+ 
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+    <!-- Schema.org Structured Data (JSON-LD) for search engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "Smart Finance Planner",
+            "url": "https://yourwebsite.com",
+            "about": "A guide to financial planning and freedom.",
+            "description": "A professional financial planning website with articles and calculators for smart money management."
+          },
+          {
+            "@type": "Article",
+            "headline": "The Roadmap to Financial Freedom: A 1000-Word Guide",
+            "description": "A practical, step-by-step roadmap to help you navigate the journey toward true financial independence.",
+            "image": "https://img.freepik.com/free-photo/finance-concept_23-2148165794.jpg",
+            "author": {
+              "@type": "Person",
+              "name": "Financial Planner"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Smart Finance Planner",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://yourwebsite.com/logo.png"
+              }
+            },
+            "datePublished": "2025-09-22"
+          }
+        ]
+      }
+    </script>
+    
 
     <!-- Tailwind CSS CDN for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for a clean, professional font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -62,18 +122,18 @@
     <header class="bg-blue-600 text-white py-12 shadow-lg relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">News Hub</h1>
-            <p class="mt-4 text-xl sm:text-2xl font-light opacity-90">Your guide to financial freedom and the latest trends.</p>
+            <p class="mt-4 text-xl sm:text-2xl font-light opacity-90">Your guide to financial freedom. Explore articles and use our tools to plan your future.</p>
         </div>
         <nav class="mt-4 md:mt-0 flex justify-center items-center">
             <ul class="flex space-x-4 md:space-x-6 text-white">
-                <li><a href="#" data-category="finance" class="nav-link text-lg font-bold border-b-2 border-white transition-colors duration-300">Finance</a></li>
-                <li><a href="#" data-category="technology" class="nav-link text-lg font-medium hover:text-blue-200 transition-colors duration-300">Technology</a></li>
-                <li><a href="#" data-category="entertainment" class="nav-link text-lg font-medium hover:text-blue-200 transition-colors duration-300">Entertainment</a></li>
+                <li><a href="#" id="nav-finance" class="text-lg font-medium hover:text-blue-200 transition-colors duration-300">Finance</a></li>
+                <li><a href="#" id="nav-technology" class="text-lg font-medium hover:text-blue-200 transition-colors duration-300">Technology</a></li>
+                <li><a href="#" id="nav-entertainment" class="text-lg font-medium hover:text-blue-200 transition-colors duration-300">Entertainment</a></li>
             </ul>
         </nav>
         <!-- Notification icon and subscribe button -->
         <div class="absolute top-4 right-4 flex items-center space-x-4">
-            <button id="subscribeBtn" class="bg-white text-blue-600 py-2 px-4 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50" title="Subscribe to real-time updates via Firebase Firestore.">
+            <button id="subscribeBtn" class="bg-white text-blue-600 py-2 px-4 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors duration-200">
                 Subscribe to Updates
             </button>
             <button id="notificationBtn" class="relative text-white hover:text-blue-200 transition-colors duration-300">
@@ -87,13 +147,13 @@
 
     <!-- Subscription Confirmation Toast -->
     <div id="subscriptionToast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg z-50 transform scale-0 opacity-0 transition-all duration-300 ease-out">
-        You are now successfully subscribed!
+        आप अब सफलतापूर्वक सब्सक्राइब हो गए हैं!
     </div>
 
     <!-- Notification Modal -->
     <div id="notificationModal" class="notification-modal-overlay">
         <div class="notification-modal-content" data-category="">
-            <h3 class="text-2xl font-bold mb-4">New Update Available!</h3>
+            <h3 class="text-2xl font-bold mb-4">You have a new update!</h3>
             <p id="notificationMessage" class="text-gray-600">You have a new update.</p>
             <p id="userIdDisplay" class="text-xs text-gray-400 mt-4 break-all"></p>
             <div class="mt-6 flex justify-center space-x-4">
@@ -107,6 +167,15 @@
         </div>
     </div>
     
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z6JJ742VHG"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z6JJ742VHG');
+    </script>
+
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         <!-- Articles Section -->
@@ -120,7 +189,7 @@
         <!-- Dynamic Article Container -->
         <div id="articleContainer" class="bg-white rounded-xl shadow-2xl p-8 mt-12 transition-all duration-300" style="display:none;">
             <div class="mb-8">
-                <img id="articleImage" src="" alt="Article image" class="w-full h-72 object-cover rounded-xl shadow-md" onerror="this.onerror=null; this.src='https://placehold.co/1024x288/E0E7FF/1E40AF?text=Image+Unavailable';">
+                <img id="articleImage" src="" alt="Article image" class="w-full h-72 object-cover rounded-xl shadow-md">
             </div>
             <div class="article-content text-lg leading-relaxed">
                 <h2 id="articleTitle" class="text-4xl font-bold text-blue-600 mb-4"></h2>
@@ -145,13 +214,13 @@
         <hr class="my-12 border-t-2 border-gray-200">
 
         <!-- Financial Calculators Section - now conditionally visible -->
-        <section id="calculatorSection" class="calculator-container bg-white rounded-xl shadow-2xl p-8 hidden">
+        <section class="calculator-container bg-white rounded-xl shadow-2xl p-8 hidden">
             <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Financial Calculators</h2>
             <div class="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8">
 
                 <!-- SIP Calculator -->
                 <div class="calculator-card flex-1 bg-blue-50 p-6 rounded-xl shadow-md">
-                    <h3 class="text-2xl font-semibold text-blue-800 mb-6">SIP Calculator (Future Value)</h3>
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-6">SIP Calculator</h3>
                     <div class="calculator-input mb-6">
                         <label for="sipAmount" class="block font-medium mb-2">Monthly Investment (₹):</label>
                         <input type="number" id="sipAmount" value="5000" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
@@ -170,7 +239,7 @@
 
                 <!-- Lumpsum Calculator -->
                 <div class="calculator-card flex-1 bg-blue-50 p-6 rounded-xl shadow-md">
-                    <h3 class="text-2xl font-semibold text-blue-800 mb-6">Lumpsum Calculator (Future Value)</h3>
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-6">Lumpsum Calculator</h3>
                     <div class="calculator-input mb-6">
                         <label for="lumpsumAmount" class="block font-medium mb-2">Total Investment (₹):</label>
                         <input type="number" id="lumpsumAmount" value="100000" class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
@@ -195,7 +264,6 @@
         <p>Disclaimer: This website and its content are for informational and educational purposes only. The calculators and articles are not intended to be and do not constitute financial advice. You should not make any financial decisions based on the information provided here without consulting a qualified financial professional.</p>
     </footer>
 
-    <!-- Consolidated and Corrected JavaScript/Module Setup -->
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -211,15 +279,25 @@
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // Initialize Firebase variables
+        // Initialize Firebase
         let app;
         let db;
         let auth;
         let userId = '';
         let userHasSubscribed = false;
-        let authReady = false;
+        
+        try {
+            if (Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            } else {
+                console.warn("Firebase config is missing. Services will not be available.");
+            }
+        } catch (e) {
+            console.error("Failed to initialize Firebase:", e);
+        }
 
-        // UI Elements
         const notificationBadge = document.getElementById('notificationBadge');
         const notificationModal = document.getElementById('notificationModal');
         const notificationMessage = document.getElementById('notificationMessage');
@@ -228,17 +306,8 @@
         const closeNotificationBtn = document.getElementById('closeNotificationBtn');
         const subscribeBtn = document.getElementById('subscribeBtn');
         const subscriptionToast = document.getElementById('subscriptionToast');
-        const blogCardsContainer = document.getElementById('blogCards');
-        const sectionTitle = document.getElementById('sectionTitle');
-        const articleContainer = document.getElementById('articleContainer');
-        const backBtn = document.getElementById('backBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const calculatorSection = document.getElementById('calculatorSection');
 
-        let currentCategory = 'finance';
-        let currentArticleIndex = -1;
-
-        // Article Data (Combined and completed the missing entries)
+        // All articles with their full content, now including Technology and Entertainment
         const articles = [
             // Finance Articles
             { id: 1, category: "finance", title: "5 Smart Financial Planning Tips for Beginners", content: "<p>One of the steps that can make you certain of your future and attainment of your goals is financial planning. The 3 simple and genius tips of financial beginners are as follows:</p><h3>1. First Budgeting: Take control the First Step.</h3><p>2. Track Your Money: There is no way you can manage something you do not measure. The first thing to be done is to know how much cash you are collecting in a month. Write down the name of all of your sources of income and each and every expense, vaguely as your rent, to that cup of coffee. This will bring you a realistic impression of your financial patterns.</h3><p>3. Prepare a Budget That Works: Use the 50/ 30/ 20 rule, 50 equals needs, 30 equals wants, 20 equals savings or debt.</p><h3>4. Debts with High Interest Rates</h3><p>5. Pay Yourself First: Save a small amount of money and then spend it first.</p>", image: "https://img.freepik.com/free-photo/finance-concept_23-2148165794.jpg" },
@@ -267,446 +336,346 @@
             { id: 20, category: "entertainment", title: "The Evolution of Streaming Services", content: "<p>Streaming services have completely changed how we watch movies and TV. As the market becomes more crowded, these services are evolving to stay ahead of the competition.</p><h3>1. The Rise of 'Hybrid' Services</h3><p>Many services are now offering a mix of ad-supported and ad-free tiers, giving consumers more choice. This has also led to a return to live sports and news on streaming platforms.</p><h3>2. Focus on Original Content</h3><p>To attract and retain subscribers, services are investing heavily in original content. This has led to a creative boom, with more high-quality and unique shows and movies being produced than ever before.</p><h3>3. A Push for Personalization</h3><p>Streaming platforms are using AI to offer hyper-personalized recommendations. They are also creating new features, like interactive shows and personalized homepages, to enhance the viewing experience.</p>", image: "https://img.freepik.com/free-photo/streaming-service-concept_23-2148169422.jpg" }
         ];
 
-        // --- Utility Functions ---
-
-        /**
-         * Formats a number as Indian currency (Rupees) with commas.
-         * @param {number} number The number to format.
-         * @returns {string} The formatted currency string.
-         */
-        function formatCurrency(number) {
-            const num = Math.round(number);
-            return new Intl.NumberFormat('en-IN', {
-                style: 'currency',
-                currency: 'INR',
-                maximumFractionDigits: 0
-            }).format(num);
+        const categories = ["finance", "technology", "entertainment"];
+        let currentCategory = 'all';
+        let latestUpdates = {};
+        
+        // Check for subscription status on page load
+        if (typeof localStorage !== 'undefined') {
+            userHasSubscribed = localStorage.getItem('userSubscribed') === 'true';
+            if (userHasSubscribed) {
+                subscribeBtn.textContent = 'Subscribed!';
+                subscribeBtn.disabled = true;
+                subscribeBtn.classList.remove('bg-white', 'text-blue-600');
+                subscribeBtn.classList.add('bg-green-500', 'text-white');
+            }
         }
+        
+        // --- Core UI & Navigation Functions ---
+        const renderCards = (category) => {
+            const container = document.getElementById('blogCards');
+            container.innerHTML = '';
+            
+            let filteredArticles = articles;
+            if (category !== 'all') {
+                filteredArticles = articles.filter(article => article.category === category);
+            }
+            
+            filteredArticles.forEach(article => {
+                const card = document.createElement('div');
+                card.id = `article-${article.id}`;
+                card.className = 'bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-2';
+                card.innerHTML = `
+                    <img src="${article.image}" alt="${article.title}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full mb-2">${article.category.charAt(0).toUpperCase() + article.category.slice(1)}</span>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${article.title}</h3>
+                        <p class="text-gray-600">${article.content.substring(0, 100).replace(/<[^>]*>/g, '')}... <span class="text-blue-600 font-semibold">Read More</span></p>
+                    </div>
+                `;
+                card.onclick = () => showArticle(article.id);
+                container.appendChild(card);
+            });
+        };
 
-        /**
-         * Shows the subscription confirmation toast.
-         */
-        function showToast() {
+        const showArticle = (articleId) => {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+            
+            document.getElementById('sectionTitle').style.display = 'none';
+            document.getElementById('blogCards').style.display = 'none';
+            document.getElementById('articleContainer').style.display = 'block';
+
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleImage').src = article.image;
+            document.getElementById('articleText').innerHTML = article.content;
+
+            // Set up next/back buttons
+            const filteredArticles = articles.filter(a => a.category === currentCategory);
+            const currentIndex = filteredArticles.findIndex(a => a.id === articleId);
+            
+            const nextBtn = document.getElementById('nextBtn');
+            const backBtn = document.getElementById('backBtn');
+            
+            nextBtn.onclick = () => {
+                const nextIndex = (currentIndex + 1) % filteredArticles.length;
+                showArticle(filteredArticles[nextIndex].id);
+            };
+            
+            backBtn.onclick = () => {
+                showMainPage();
+            };
+        };
+        
+        const showMainPage = () => {
+            document.getElementById('sectionTitle').style.display = 'block';
+            document.getElementById('blogCards').style.display = 'grid';
+            document.getElementById('articleContainer').style.display = 'none';
+        };
+
+        // Event listeners for navigation
+        document.getElementById('nav-finance').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCategory = 'finance';
+            renderCards('finance');
+            showMainPage();
+            document.getElementById('sectionTitle').textContent = 'Finance Articles';
+        });
+
+        document.getElementById('nav-technology').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCategory = 'technology';
+            renderCards('technology');
+            showMainPage();
+            document.getElementById('sectionTitle').textContent = 'Technology Articles';
+        });
+
+        document.getElementById('nav-entertainment').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCategory = 'entertainment';
+            renderCards('entertainment');
+            showMainPage();
+            document.getElementById('sectionTitle').textContent = 'Entertainment Articles';
+        });
+
+        // Event listener for the main back button on the article view
+        document.getElementById('backBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            renderCards(currentCategory);
+            showMainPage();
+        });
+        
+        // Initial render
+        renderCards('finance');
+
+        // --- Firebase Functions ---
+        // Firestore में उपयोगकर्ता की सदस्यता की स्थिति अपडेट करता है।
+        const updateSubscriptions = async (uid) => {
+            if (!db || !uid) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'userData', 'subscription');
+            const userSubscribed = userHasSubscribed;
+            try {
+                await setDoc(docRef, { uid, subscribed: userSubscribed }, { merge: true });
+                console.log("User subscription status updated in Firestore.");
+            } catch (e) {
+                console.error("Error updating subscription status:", e);
+            }
+        };
+
+        // Firestore में उपयोगकर्ता द्वारा देखे गए अंतिम लेख (last seen article) को अपडेट करता है।
+        const updateLastSeenArticle = async (uid, category, articleId) => {
+            if (!db || !uid) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'last_seen_updates', category);
+            try {
+                await setDoc(docRef, { lastSeenArticleId: articleId }, { merge: true });
+                console.log(`User last seen article updated for ${category}:`, articleId);
+            } catch (e) {
+                console.error("Error updating last seen article:", e);
+            }
+        };
+
+        // यह जाँचता है कि किसी श्रेणी में कोई नया अपडेट है या नहीं।
+        const checkForUpdates = async (uid) => {
+            if (!db || !uid || !userHasSubscribed) return;
+
+            notificationBadge.classList.add('hidden');
+            
+            for (const category of categories) {
+                try {
+                    // उपयोगकर्ता का अंतिम देखा गया लेख ID प्राप्त करें।
+                    const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'last_seen_updates', category);
+                    const userDocSnap = await getDoc(userDocRef);
+                    const lastSeenId = userDocSnap.exists() ? userDocSnap.data().lastSeenArticleId : 0;
+                    
+                    // सार्वजनिक अपडेट संग्रह से नवीनतम प्रकाशित लेख ID प्राप्त करें।
+                    const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'public_updates', category);
+                    const updatesDocSnap = await getDoc(updatesDocRef);
+
+                    if (updatesDocSnap.exists()) {
+                        const latestArticleData = updatesDocSnap.data();
+                        const latestArticleId = latestArticleData.latestArticleId;
+                        const latestArticleTitle = latestArticleData.latestArticleTitle;
+                        
+                        if (latestArticleId > lastSeenId) {
+                            notificationBadge.classList.remove('hidden');
+                            notificationMessage.innerHTML = `**${category.charAt(0).toUpperCase() + category.slice(1)}** श्रेणी में एक नया लेख प्रकाशित हुआ है: "${latestArticleTitle}"!`;
+                            
+                            const article = articles.find(a => a.id === latestArticleId);
+                            if (article) {
+                                readNowBtn.href = `#article-${article.id}`;
+                                notificationModal.setAttribute('data-category', category); // श्रेणी को modal में संग्रहीत करें
+                                notificationModal.style.display = 'flex';
+                            }
+                            // एक बार सूचना दिखाने के बाद लूप को रोक दें।
+                            return; 
+                        }
+                    }
+                } catch (e) {
+                    console.error(`Error checking for updates in ${category}:`, e);
+                }
+            }
+        };
+
+        // सदस्यता की पुष्टि के लिए एक अस्थायी सूचना दिखाता है।
+        const showSubscriptionToast = () => {
             subscriptionToast.classList.remove('scale-0', 'opacity-0');
             subscriptionToast.classList.add('scale-100', 'opacity-100');
             setTimeout(() => {
                 subscriptionToast.classList.remove('scale-100', 'opacity-100');
                 subscriptionToast.classList.add('scale-0', 'opacity-0');
             }, 3000);
-        }
+        };
 
-        // --- Financial Calculator Logic ---
-
-        window.calculateSIP = function() {
-            const P = parseFloat(document.getElementById('sipAmount').value);
-            const r_annual = parseFloat(document.getElementById('sipReturn').value);
-            const t_years = parseFloat(document.getElementById('sipYears').value);
-
-            if (isNaN(P) || isNaN(r_annual) || isNaN(t_years) || P <= 0 || t_years <= 0) {
-                document.getElementById('sipResult').innerHTML = '<span class="text-red-600">Please enter valid values.</span>';
-                return;
-            }
-
-            // Calculations
-            const n_months = t_years * 12;
-            const i_monthly = (r_annual / 100) / 12;
-
-            let futureValue;
-
-            if (i_monthly === 0) {
-                // Simple case if interest rate is 0
-                futureValue = P * n_months;
-            } else {
-                // Future Value of Annuity Due (assuming investment happens at the start of the month)
-                // FV = P * [ ((1 + i)^n - 1) / i ] * (1 + i)
-                futureValue = P * ((Math.pow(1 + i_monthly, n_months) - 1) / i_monthly) * (1 + i_monthly);
-            }
-            
-            const investedAmount = P * n_months;
-            const wealthGained = futureValue - investedAmount;
-
-            document.getElementById('sipResult').innerHTML = `
-                <div class="space-y-2">
-                    <p class="text-xl text-blue-800">Maturity Value: <span class="text-green-600">${formatCurrency(futureValue)}</span></p>
-                    <p class="text-sm text-gray-600">Total Invested: ${formatCurrency(investedAmount)}</p>
-                    <p class="text-sm text-gray-600">Wealth Gained: ${formatCurrency(wealthGained)}</p>
-                </div>
-            `;
-        }
-
-        window.calculateLumpsum = function() {
-            const P = parseFloat(document.getElementById('lumpsumAmount').value);
-            const r_annual = parseFloat(document.getElementById('lumpsumReturn').value);
-            const t_years = parseFloat(document.getElementById('lumpsumYears').value);
-
-            if (isNaN(P) || isNaN(r_annual) || isNaN(t_years) || P <= 0 || t_years <= 0) {
-                document.getElementById('lumpsumResult').innerHTML = '<span class="text-red-600">Please enter valid values.</span>';
-                return;
-            }
-
-            // Calculations
-            const r_decimal = r_annual / 100;
-            // Compound Interest Formula: A = P * (1 + r)^t
-            const futureValue = P * Math.pow(1 + r_decimal, t_years);
-
-            const wealthGained = futureValue - P;
-
-            document.getElementById('lumpsumResult').innerHTML = `
-                <div class="space-y-2">
-                    <p class="text-xl text-blue-800">Maturity Value: <span class="text-green-600">${formatCurrency(futureValue)}</span></p>
-                    <p class="text-sm text-gray-600">Total Invested: ${formatCurrency(P)}</p>
-                    <p class="text-sm text-gray-600">Wealth Gained: ${formatCurrency(wealthGained)}</p>
-                </div>
-            `;
-        }
-
-        // --- Article Display Logic ---
-
-        /**
-         * Renders the filtered articles as cards.
-         * @param {string} category The category to filter by.
-         */
-        function displayArticles(category) {
-            currentCategory = category;
-            const filteredArticles = articles.filter(a => a.category === category);
-            
-            // Update UI visibility
-            articleContainer.style.display = 'none';
-            blogCardsContainer.parentElement.style.display = 'block';
-
-            if (category === 'finance') {
-                calculatorSection.classList.remove('hidden');
-            } else {
-                calculatorSection.classList.add('hidden');
-            }
-
-            // Update title
-            sectionTitle.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Articles & Tools`;
-
-            // Render cards
-            blogCardsContainer.innerHTML = filteredArticles.map(article => `
-                <div class="article-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden cursor-pointer" data-id="${article.id}">
-                    <img src="${article.image}" alt="${article.title}" class="w-full h-48 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x300/E0E7FF/1E40AF?text=Image+Unavailable';">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">${article.title}</h3>
-                        <p class="text-gray-600 text-sm">${article.content.substring(0, 100).replace(/<[^>]*>?/gm, '')}...</p>
-                        <a href="#" class="mt-4 inline-block text-blue-600 font-semibold hover:text-blue-800 transition-colors" data-id="${article.id}">Read More &rarr;</a>
-                    </div>
-                </div>
-            `).join('');
-
-            // Attach click listeners to cards/links
-            document.querySelectorAll('.article-card, .article-card a').forEach(element => {
-                element.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Get the ID from the card or the link's data-id
-                    const id = e.currentTarget.dataset.id || e.currentTarget.closest('.article-card').dataset.id;
-                    const index = filteredArticles.findIndex(a => a.id == id);
-                    if (index !== -1) {
-                        showArticle(index);
+        // --- Event Listeners for Firebase & UI ---
+        
+        // Subscription button logic
+        if (subscribeBtn) {
+            subscribeBtn.addEventListener('click', () => {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem('userSubscribed', 'true');
+                    userHasSubscribed = true;
+                    subscribeBtn.textContent = 'Subscribed!';
+                    subscribeBtn.disabled = true;
+                    subscribeBtn.classList.remove('bg-white', 'text-blue-600');
+                    subscribeBtn.classList.add('bg-green-500', 'text-white');
+                    showSubscriptionToast();
+                    if (userId) {
+                        updateSubscriptions(userId);
                     }
-                });
+                }
             });
-        }
-
-        /**
-         * Displays the full content of a specific article.
-         * @param {number} index The index of the article in the current filtered list.
-         */
-        function showArticle(index) {
-            const filteredArticles = articles.filter(a => a.category === currentCategory);
-            if (index < 0 || index >= filteredArticles.length) return;
-
-            currentArticleIndex = index;
-            const article = filteredArticles[index];
-
-            document.getElementById('articleTitle').textContent = article.title;
-            document.getElementById('articleText').innerHTML = article.content;
-            document.getElementById('articleImage').src = article.image;
-
-            // Update navigation buttons state
-            backBtn.style.display = 'flex';
-            nextBtn.style.display = (index < filteredArticles.length - 1) ? 'flex' : 'none';
-            
-            // Show article, hide card grid/calculators
-            blogCardsContainer.parentElement.style.display = 'none';
-            calculatorSection.classList.add('hidden');
-            articleContainer.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        // --- Firebase/Auth/Firestore Logic ---
-
-        // 1. Initialization and Authentication Setup
-        if (Object.keys(firebaseConfig).length > 0) {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                // Sign in with custom token or anonymously
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                    } else {
-                        // Sign in anonymously if no token is available
-                        try {
-                            if (initialAuthToken) {
-                                await signInWithCustomToken(auth, initialAuthToken);
-                            } else {
-                                await signInAnonymously(auth);
-                            }
-                        } catch (e) {
-                            console.error("Auth failed:", e);
-                        }
-                    }
-
-                    if (!authReady) {
-                        authReady = true;
-                        console.log("Firebase Auth Ready. User ID:", userId);
-                        userIdDisplay.textContent = `User ID: ${userId}`;
-                        // Initial data load/listeners start only once auth is ready
-                        await getSubscriptionStatus();
-                        listenForNotifications();
-                    }
-                });
-            } catch (e) {
-                console.error("Failed to initialize Firebase:", e);
-            }
-        } else {
-            console.warn("Firebase config is missing. App running in mock mode.");
-        }
-
-
-        // 2. Subscription Management (Private Data)
-        const getSubscriptionDocRef = (uid) => doc(db, `artifacts/${appId}/users/${uid}/profile/subscription`);
-
-        /**
-         * Loads the user's subscription status from Firestore.
-         */
-        async function getSubscriptionStatus() {
-            if (!db || !userId) return;
-            try {
-                const docRef = getSubscriptionDocRef(userId);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    userHasSubscribed = docSnap.data().subscribed || false;
-                } else {
-                    // Create the doc if it doesn't exist, defaulting to false
-                    await setDoc(docRef, { subscribed: false });
-                    userHasSubscribed = false;
-                }
-                updateSubscriptionButton();
-            } catch (e) {
-                console.error("Error reading subscription status:", e);
-            }
-        }
-
-        /**
-         * Updates the user's subscription status in Firestore.
-         */
-        async function setSubscriptionStatus(status) {
-            if (!db || !userId) return;
-            try {
-                const docRef = getSubscriptionDocRef(userId);
-                await setDoc(docRef, { subscribed: status }, { merge: true });
-                userHasSubscribed = status;
-                updateSubscriptionButton();
-                if (status) {
-                    showToast();
-                }
-            } catch (e) {
-                console.error("Error updating subscription status:", e);
-            }
-        }
-
-        /**
-         * Updates the UI state of the subscribe button.
-         */
-        function updateSubscriptionButton() {
-            if (userHasSubscribed) {
-                subscribeBtn.textContent = 'Subscribed (Updates ON)';
-                subscribeBtn.classList.remove('bg-white', 'text-blue-600', 'hover:bg-gray-100');
-                subscribeBtn.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600');
-                subscribeBtn.disabled = true;
-            } else {
-                subscribeBtn.textContent = 'Subscribe to Updates';
-                subscribeBtn.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600');
-                subscribeBtn.classList.add('bg-white', 'text-blue-600', 'hover:bg-gray-100');
-                subscribeBtn.disabled = false;
-            }
-        }
-
-
-        // 3. Real-time Public Notifications
-
-        /**
-         * Sets up a real-time listener for new public notifications.
-         */
-        function listenForNotifications() {
-            if (!db) return;
-            const publicCollectionPath = `artifacts/${appId}/public/data/notifications`;
-            const q = doc(db, publicCollectionPath, 'latest'); // Check only for the 'latest' document
-
-            // Use exponential backoff for retries
-            const maxRetries = 5;
-            let currentRetry = 0;
-
-            const attemptListen = () => {
-                try {
-                    onSnapshot(q, (docSnapshot) => {
-                        if (docSnapshot.exists() && userHasSubscribed) {
-                            const notification = docSnapshot.data();
-                            // Check if a recent notification exists
-                            if (notification.timestamp && Date.now() - notification.timestamp.toMillis() < (60 * 60 * 1000)) {
-                                updateNotificationUI(notification);
-                            }
-                        }
-                    }, (error) => {
-                        console.error("Error listening to notifications:", error);
-                        handleSnapshotError();
-                    });
-                } catch (e) {
-                    console.error("Snapshot setup failed:", e);
-                    handleSnapshotError();
-                }
-            };
-            
-            const handleSnapshotError = () => {
-                if (currentRetry < maxRetries) {
-                    const delay = Math.pow(2, currentRetry) * 1000;
-                    currentRetry++;
-                    // Silence console logs for retries to avoid unnecessary noise
-                    // console.warn(`Retrying listener in ${delay}ms... (Attempt ${currentRetry})`);
-                    setTimeout(attemptListen, delay);
-                } else {
-                    console.error("Maximum retries reached. Notification listener stopped.");
-                }
-            };
-
-            attemptListen();
-        }
-
-        let lastNotification = null;
-
-        /**
-         * Updates the notification badge and modal content.
-         * @param {object} notification The notification document data.
-         */
-        function updateNotificationUI(notification) {
-            if (!notification || !userHasSubscribed) return;
-
-            // Only show if the notification ID is different from the last one seen
-            if (lastNotification && lastNotification.id === notification.id) return;
-
-            notificationBadge.classList.remove('hidden');
-            notificationMessage.textContent = notification.message || "A new article has been published!";
-            notificationModal.setAttribute('data-article-id', notification.articleId || -1);
-            notificationModal.setAttribute('data-category', notification.category || currentCategory);
-            
-            lastNotification = notification;
-        }
-
-        // --- Event Listeners ---
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Initial Load: Display Finance articles by default
-            displayArticles('finance');
-
-            // 2. Navigation Links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const category = e.target.getAttribute('data-category');
-                    if (category) {
-                        displayArticles(category);
-                        // Update active link style
-                        document.querySelectorAll('.nav-link').forEach(l => {
-                            l.classList.remove('font-bold', 'border-b-2', 'border-white');
-                            l.classList.add('font-medium', 'hover:text-blue-200');
-                        });
-                        e.target.classList.remove('font-medium', 'hover:text-blue-200');
-                        e.target.classList.add('font-bold', 'border-b-2', 'border-white');
-                    }
-                });
-            });
-
-            // 3. Article Navigation Buttons
-            backBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const filteredArticles = articles.filter(a => a.category === currentCategory);
-                if (currentArticleIndex > 0) {
-                    showArticle(currentArticleIndex - 1);
-                } else {
-                    // Go back to the main article grid
-                    displayArticles(currentCategory);
-                }
-            });
-
-            nextBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const filteredArticles = articles.filter(a => a.category === currentCategory);
-                if (currentArticleIndex < filteredArticles.length - 1) {
-                    showArticle(currentArticleIndex + 1);
-                }
-            });
-
-            // 4. Subscription Button
-            subscribeBtn.addEventListener('click', () => {
-                if (db && userId) {
-                    setSubscriptionStatus(true);
-                } else {
-                    console.error("Firebase not ready or User ID missing.");
-                }
-            });
-
-            // 5. Notification Modal Controls
-            notificationBtn.addEventListener('click', () => {
-                if (!notificationBadge.classList.contains('hidden')) {
-                    notificationModal.style.display = 'flex';
-                }
-            });
-
-            closeNotificationBtn.addEventListener('click', () => {
-                notificationModal.style.display = 'none';
-            });
-
-            readNowBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const articleId = notificationModal.getAttribute('data-article-id');
-                const category = notificationModal.getAttribute('data-category');
-                
-                if (articleId != -1) {
-                    // Switch to the correct category view
-                    document.querySelectorAll('.nav-link').forEach(l => {
-                        if (l.getAttribute('data-category') === category) {
-                            l.click(); // This will call displayArticles(category)
-                        }
-                    });
-
-                    // Find the article index in the new filtered list
-                    const filteredArticles = articles.filter(a => a.category === category);
-                    const index = filteredArticles.findIndex(a => a.id == articleId);
-                    
-                    if (index !== -1) {
-                        showArticle(index);
-                    }
-                }
-
-                // Clear the notification badge after clicking read now
+        // Read Now button logic to close modal and mark notification as seen
+        if (readNowBtn) {
+            readNowBtn.addEventListener('click', async (e) => {
+                e.preventDefault(); // Prevent default link behavior
                 notificationModal.style.display = 'none';
                 notificationBadge.classList.add('hidden');
-                // You might also want to log this read status to Firestore here if needed
-            });
-        });
 
-        // Initialize SIP and Lumpsum on load
-        window.onload = () => {
-            if (document.getElementById('sipAmount')) calculateSIP();
-            if (document.getElementById('lumpsumAmount')) calculateLumpsum();
+                const category = notificationModal.getAttribute('data-category');
+                const link = e.target.href;
+                const articleId = parseInt(link.split('-').pop());
+                const article = articles.find(a => a.id === articleId);
+
+                if (article) {
+                    currentCategory = article.category;
+                    showArticle(articleId);
+                    if (userId) {
+                        await updateLastSeenArticle(userId, category, articleId);
+                    }
+                }
+            });
         }
 
+        if (closeNotificationBtn) {
+            closeNotificationBtn.addEventListener('click', async () => {
+                notificationModal.style.display = 'none';
+                notificationBadge.classList.add('hidden');
+                
+                // नवीनतम लेख को उपयोगकर्ता द्वारा देखा गया (seen) चिह्नित करें।
+                const category = notificationModal.getAttribute('data-category');
+                const updatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'public_updates', category);
+                const updatesDocSnap = await getDoc(updatesDocRef);
+                if (updatesDocSnap.exists()) {
+                    const latestArticleId = updatesDocSnap.data().latestArticleId;
+                    if (userId) {
+                        await updateLastSeenArticle(userId, category, latestArticleId);
+                    }
+                }
+            });
+        }
+
+        // --- Firebase Authentication State Listener ---
+        if (auth) {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("User is authenticated with ID:", userId);
+                    userIdDisplay.textContent = 'Your User ID: ' + userId;
+                    updateSubscriptions(userId);
+                    checkForUpdates(userId);
+                } else {
+                    console.log("No user is signed in. Signing in anonymously...");
+                    userIdDisplay.textContent = 'No user signed in.';
+                    // Use signInWithCustomToken if available, otherwise fall back to anonymous
+                    if (initialAuthToken) {
+                        try {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } catch (error) {
+                            console.error("Custom token sign-in failed:", error);
+                            signInAnonymously(auth); // Fallback to anonymous
+                        }
+                    } else {
+                        signInAnonymously(auth);
+                    }
+                }
+            });
+        }
+
+        // --- Calculator Functions ---
+        function calculateSIP() {
+            const amount = parseFloat(document.getElementById('sipAmount').value);
+            const rate = parseFloat(document.getElementById('sipReturn').value) / 100 / 12;
+            const years = parseFloat(document.getElementById('sipYears').value);
+            const months = years * 12;
+
+            if (isNaN(amount) || isNaN(rate) || isNaN(years)) {
+                document.getElementById('sipResult').textContent = "Please enter valid numbers.";
+                return;
+            }
+
+            const futureValue = amount * ((Math.pow(1 + rate, months) - 1) / rate) * (1 + rate);
+            const totalInvestment = amount * months;
+            const totalReturns = futureValue - totalInvestment;
+
+            document.getElementById('sipResult').innerHTML = `
+                <p>Investment: ₹${totalInvestment.toFixed(0)}</p>
+                <p>Returns: ₹${totalReturns.toFixed(0)}</p>
+                <p>Total Value: ₹${futureValue.toFixed(0)}</p>
+            `;
+        }
+
+        function calculateLumpsum() {
+            const amount = parseFloat(document.getElementById('lumpsumAmount').value);
+            const rate = parseFloat(document.getElementById('lumpsumReturn').value) / 100;
+            const years = parseFloat(document.getElementById('lumpsumYears').value);
+
+            if (isNaN(amount) || isNaN(rate) || isNaN(years)) {
+                document.getElementById('lumpsumResult').textContent = "Please enter valid numbers.";
+                return;
+            }
+
+            const futureValue = amount * Math.pow((1 + rate), years);
+            const totalReturns = futureValue - amount;
+
+            document.getElementById('lumpsumResult').innerHTML = `
+                <p>Investment: ₹${amount.toFixed(0)}</p>
+                <p>Returns: ₹${totalReturns.toFixed(0)}</p>
+                <p>Total Value: ₹${futureValue.toFixed(0)}</p>
+            `;
+        }
+        
+        // Expose calculator functions to the global scope for onclick attributes
+        window.calculateSIP = calculateSIP;
+        window.calculateLumpsum = calculateLumpsum;
+    </script>
+
+    <!-- Console Commands to Simulate an Update (परीक्षण करने के लिए इन कमांड्स का उपयोग करें) -->
+    <script>
+        // इस कमांड को कंसोल में कॉपी और पेस्ट करें और एंटर दबाएं।
+        // यह एक नए 'finance' लेख के प्रकाशन का अनुकरण करता है।
+        // 'latestArticleId' और 'latestArticleTitle' को अपनी आवश्यकतानुसार बदल सकते हैं।
+        // doc(db, 'artifacts', __app_id, 'public', 'data', 'public_updates', 'finance')
+        // setDoc(docRef, { latestArticleId: 10, latestArticleTitle: "Financial Mistakes to Avoid in Your 20s and 30s" })
+        
+        // यह कमांड एक नए 'technology' लेख के प्रकाशन का अनुकरण करता है।
+        // doc(db, 'artifacts', __app_id, 'public', 'data', 'public_updates', 'technology')
+        // setDoc(docRef, { latestArticleId: 15, latestArticleTitle: "5G vs. 6G: What's the Next Frontier?" })
+
+        // यह कमांड एक नए 'entertainment' लेख के प्रकाशन का अनुकरण करता है।
+        // doc(db, 'artifacts', __app_id, 'public', 'data', 'public_updates', 'entertainment')
+        // setDoc(docRef, { latestArticleId: 20, latestArticleTitle: "The Evolution of Streaming Services" })
     </script>
 </body>
 </html>
