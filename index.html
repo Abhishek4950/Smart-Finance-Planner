@@ -443,13 +443,6 @@
             showMainPage();
             document.getElementById('sectionTitle').textContent = 'Entertainment Articles';
         });
-
-        // Event listener for the main back button on the article view
-        document.getElementById('backBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            renderCards(currentCategory);
-            showMainPage();
-        });
         
         // Initial render
         renderCards('finance');
